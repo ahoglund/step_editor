@@ -16,7 +16,7 @@ type alias Model =
 initModel : Model
 initModel =
     { total_beats   = 16
-    , bpm           = 120
+    , bpm           = 220
     , current_beat  = 1   }
 
 type Msg = UpdateBeat Time | Play | Stop
@@ -70,7 +70,11 @@ view model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Time.every Time.second UpdateBeat
+  Time.every (Time.minute * (interval model)) UpdateBeat
+
+interval : Model -> Float
+interval model =
+    1 / (toFloat model.bpm)
 
 init =
   let

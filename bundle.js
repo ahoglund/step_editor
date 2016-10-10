@@ -8346,6 +8346,9 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
+var _user$project$Main$interval = function (model) {
+	return 1 / _elm_lang$core$Basics$toFloat(model.bpm);
+};
 var _user$project$Main$stepEditorTracks = function (model) {
 	return A2(
 		_elm_lang$html$Html$tr,
@@ -8404,7 +8407,7 @@ var _user$project$Main$stepEditorSection = function (model) {
 				_user$project$Main$stepEditor(model)
 			]));
 };
-var _user$project$Main$initModel = {total_beats: 16, bpm: 120, current_beat: 1};
+var _user$project$Main$initModel = {total_beats: 16, bpm: 220, current_beat: 1};
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
@@ -8479,7 +8482,10 @@ var _user$project$Main$UpdateBeat = function (a) {
 	return {ctor: 'UpdateBeat', _0: a};
 };
 var _user$project$Main$subscriptions = function (model) {
-	return A2(_elm_lang$core$Time$every, _elm_lang$core$Time$second, _user$project$Main$UpdateBeat);
+	return A2(
+		_elm_lang$core$Time$every,
+		_elm_lang$core$Time$minute * _user$project$Main$interval(model),
+		_user$project$Main$UpdateBeat);
 };
 var _user$project$Main$main = {
 	main: _elm_lang$html$Html_App$program(
