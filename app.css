@@ -8,3 +8,18 @@
   background-color: black;
   color: white;
 }
+
+th {
+  text-align: center;
+}
+
+.editor-cell {
+  width: 40.5px;
+  height: 40.5px;
+  background-color: white;
+  border: 1px solid grey;
+}
+
+.editor-cell .active {
+  background-color: grey;
+}
