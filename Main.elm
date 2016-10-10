@@ -10,6 +10,7 @@ import String
 type alias Model =
     { total_beats : Int,
       current_beat : Int,
+      playing : Bool,
       bpm : Int }
 
 
@@ -17,6 +18,7 @@ initModel : Model
 initModel =
     { total_beats   = 16
     , bpm           = 220
+    , playing       = False
     , current_beat  = 1   }
 
 type Msg = UpdateBeat Time | Play | Stop
@@ -30,9 +32,9 @@ update msg model =
           else
             ( { model | current_beat = model.current_beat + 1 }, Cmd.none )
         Play ->
-          ( initModel, Cmd.none )
+          ( { model | playing = True  }, Cmd.none )
         Stop ->
-          ( initModel, Cmd.none )
+          ( { model | playing = False }, Cmd.none )
 
 stepEditorSection : Model -> Html Msg
 stepEditorSection model =
@@ -70,7 +72,11 @@ view model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Time.every (Time.minute * (interval model)) UpdateBeat
+  case model.playing of
+    True ->
+      Time.every (Time.minute * (interval model)) UpdateBeat
+    False ->
+      Sub.none
 
 interval : Model -> Float
 interval model =
@@ -84,10 +90,10 @@ init =
 
 main : Program Never
 main =
-    App.program
-        { init = init
-        , subscriptions = subscriptions
-        , update = update
-        , view = view
-        }
+  App.program
+    { init          = init
+    , subscriptions = subscriptions
+    , update        = update
+    , view          = view
+    }
 

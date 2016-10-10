@@ -8407,7 +8407,7 @@ var _user$project$Main$stepEditorSection = function (model) {
 				_user$project$Main$stepEditor(model)
 			]));
 };
-var _user$project$Main$initModel = {total_beats: 16, bpm: 220, current_beat: 1};
+var _user$project$Main$initModel = {total_beats: 16, bpm: 220, playing: false, current_beat: 1};
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
@@ -8421,18 +8421,30 @@ var _user$project$Main$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'Play':
-				return {ctor: '_Tuple2', _0: _user$project$Main$initModel, _1: _elm_lang$core$Platform_Cmd$none};
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{playing: true}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			default:
-				return {ctor: '_Tuple2', _0: _user$project$Main$initModel, _1: _elm_lang$core$Platform_Cmd$none};
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{playing: false}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 		}
 	});
 var _user$project$Main$init = function () {
 	var model = _user$project$Main$initModel;
 	return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 }();
-var _user$project$Main$Model = F3(
-	function (a, b, c) {
-		return {total_beats: a, current_beat: b, bpm: c};
+var _user$project$Main$Model = F4(
+	function (a, b, c, d) {
+		return {total_beats: a, current_beat: b, playing: c, bpm: d};
 	});
 var _user$project$Main$Stop = {ctor: 'Stop'};
 var _user$project$Main$Play = {ctor: 'Play'};
@@ -8482,10 +8494,15 @@ var _user$project$Main$UpdateBeat = function (a) {
 	return {ctor: 'UpdateBeat', _0: a};
 };
 var _user$project$Main$subscriptions = function (model) {
-	return A2(
-		_elm_lang$core$Time$every,
-		_elm_lang$core$Time$minute * _user$project$Main$interval(model),
-		_user$project$Main$UpdateBeat);
+	var _p1 = model.playing;
+	if (_p1 === true) {
+		return A2(
+			_elm_lang$core$Time$every,
+			_elm_lang$core$Time$minute * _user$project$Main$interval(model),
+			_user$project$Main$UpdateBeat);
+	} else {
+		return _elm_lang$core$Platform_Sub$none;
+	}
 };
 var _user$project$Main$main = {
 	main: _elm_lang$html$Html_App$program(
