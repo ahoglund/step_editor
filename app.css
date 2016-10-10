@@ -1,0 +1,10 @@
+.container {
+  width: auto;
+  max-width: 680px;
+  padding: 0 15px;
+}
+
+.current-beat {
+  background-color: black;
+  color: white;
+}
