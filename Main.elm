@@ -8,33 +8,52 @@ import Time exposing (Time, second)
 import String
 
 type alias Model =
-    { total_beats : Int,
-      current_beat : Int,
-      playing : Bool,
-      bpm : Int }
+  { tracks : List Track
+  , current_beat : Int
+  , is_playing : Bool
+  , bpm : Int }
 
+type alias Track =
+  { beats : List Beat
+  , id : Int }
+
+type alias Beat =
+  { is_active : Bool
+  , id: Int }
+
+initBeat : Int -> Beat
+initBeat id =
+  { id = id
+  , is_active = False }
+
+initTrack : Int -> Track
+initTrack id =
+  { id = id
+  , beats = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16] |> List.map initBeat }
 
 initModel : Model
 initModel =
-    { total_beats   = 16
-    , bpm           = 220
-    , playing       = False
-    , current_beat  = 1   }
+  { tracks = [1,2,3,4] |> List.map initTrack
+  , bpm = 220
+  , is_playing = False
+  , current_beat = 1 }
 
-type Msg = UpdateBeat Time | Play | Stop
+type Msg = UpdateBeat Time | ActivateCell Int Int | Play | Stop
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        ActivateCell track_number cell_number ->
+          ( model, Cmd.none )
         UpdateBeat time ->
-          if model.current_beat == model.total_beats then
+          if model.current_beat == List.length model.tracks then
             ( { model | current_beat = 1 }, Cmd.none )
           else
             ( { model | current_beat = model.current_beat + 1 }, Cmd.none )
         Play ->
-          ( { model | playing = True  }, Cmd.none )
+          ( { model | is_playing = True  }, Cmd.none )
         Stop ->
-          ( { model | playing = False }, Cmd.none )
+          ( { model | is_playing = False }, Cmd.none )
 
 stepEditorSection : Model -> Html Msg
 stepEditorSection model =
@@ -49,13 +68,8 @@ stepEditorHeader =
 stepEditor : Model -> Html Msg
 stepEditor model =
   table [ class "table" ]
-  [
-    stepEditorTableHeader
-  , stepEditorTracks model 1
-  , stepEditorTracks model 2
-  , stepEditorTracks model 3
-  , stepEditorTracks model 4
-  ]
+  [ stepEditorTableHeader
+  , stepEditorTracks model ]
 
 stepEditorTableHeader : Html Msg
 stepEditorTableHeader =
@@ -78,26 +92,23 @@ stepEditorTableHeader =
     th [] [ text "16" ]
   ]
 
-stepEditorTracks : Model -> Int -> Html Msg
-stepEditorTracks model track_number =
-  tr [] [
-    td [ id ( "track-" ++ (toString track_number) ++ "-cell-1"), class "editor-cell"] [ ],
-    td [ id ( "track-" ++ (toString track_number) ++ "-cell-2"), class "editor-cell"] [ ],
-    td [ id ( "track-" ++ (toString track_number) ++ "-cell-3"), class "editor-cell"] [ ],
-    td [ id ( "track-" ++ (toString track_number) ++ "-cell-4"), class "editor-cell"] [ ],
-    td [ id ( "track-" ++ (toString track_number) ++ "-cell-5"), class "editor-cell"] [ ],
-    td [ id ( "track-" ++ (toString track_number) ++ "-cell-6"), class "editor-cell"] [ ],
-    td [ id ( "track-" ++ (toString track_number) ++ "-cell-7"), class "editor-cell"] [ ],
-    td [ id ( "track-" ++ (toString track_number) ++ "-cell-8"), class "editor-cell"] [ ],
-    td [ id ( "track-" ++ (toString track_number) ++ "-cell-9"), class "editor-cell"] [ ],
-    td [ id ( "track-" ++ (toString track_number) ++ "-cell-10"), class "editor-cell"] [ ],
-    td [ id ( "track-" ++ (toString track_number) ++ "-cell-11"), class "editor-cell"] [ ],
-    td [ id ( "track-" ++ (toString track_number) ++ "-cell-12"), class "editor-cell"] [ ],
-    td [ id ( "track-" ++ (toString track_number) ++ "-cell-13"), class "editor-cell"] [ ],
-    td [ id ( "track-" ++ (toString track_number) ++ "-cell-14"), class "editor-cell"] [ ],
-    td [ id ( "track-" ++ (toString track_number) ++ "-cell-15"), class "editor-cell"] [ ],
-    td [ id ( "track-" ++ (toString track_number) ++ "-cell-16"), class "editor-cell"] [ ]
-  ]
+stepEditorTracks : Model -> Html Msg
+stepEditorTracks model =
+  model.tracks
+  |> List.map stepEditorTrack
+  |> tbody []
+
+stepEditorTrack : Track -> Html Msg
+stepEditorTrack track =
+  track.beats
+  |> List.map stepEditorCell
+  |> tr []
+
+stepEditorCell : Beat -> Html Msg
+stepEditorCell beat  =
+  td [ id ( "track-" ++ (toString beat.id) ++ "-cell-" ++ (toString beat.id))
+    , class "editor-cell", onClick (ActivateCell beat.id beat.id)
+  ] [ text (toString beat.id ++ toString beat.id)]
 
 buttons : Html Msg
 buttons =
@@ -115,7 +126,7 @@ view model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  case model.playing of
+  case model.is_playing of
     True ->
       Time.every (Time.minute * (interval model)) UpdateBeat
     False ->

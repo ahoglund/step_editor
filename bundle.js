@@ -8349,272 +8349,6 @@ var _elm_lang$html$Html_Events$Options = F2(
 var _user$project$Main$interval = function (model) {
 	return 1 / _elm_lang$core$Basics$toFloat(model.bpm);
 };
-var _user$project$Main$stepEditorTracks = F2(
-	function (model, track_number) {
-		return A2(
-			_elm_lang$html$Html$tr,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$td,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$id(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'track-',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(track_number),
-									'-cell-1'))),
-							_elm_lang$html$Html_Attributes$class('editor-cell')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$td,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$id(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'track-',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(track_number),
-									'-cell-2'))),
-							_elm_lang$html$Html_Attributes$class('editor-cell')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$td,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$id(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'track-',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(track_number),
-									'-cell-3'))),
-							_elm_lang$html$Html_Attributes$class('editor-cell')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$td,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$id(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'track-',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(track_number),
-									'-cell-4'))),
-							_elm_lang$html$Html_Attributes$class('editor-cell')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$td,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$id(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'track-',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(track_number),
-									'-cell-5'))),
-							_elm_lang$html$Html_Attributes$class('editor-cell')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$td,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$id(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'track-',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(track_number),
-									'-cell-6'))),
-							_elm_lang$html$Html_Attributes$class('editor-cell')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$td,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$id(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'track-',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(track_number),
-									'-cell-7'))),
-							_elm_lang$html$Html_Attributes$class('editor-cell')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$td,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$id(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'track-',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(track_number),
-									'-cell-8'))),
-							_elm_lang$html$Html_Attributes$class('editor-cell')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$td,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$id(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'track-',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(track_number),
-									'-cell-9'))),
-							_elm_lang$html$Html_Attributes$class('editor-cell')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$td,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$id(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'track-',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(track_number),
-									'-cell-10'))),
-							_elm_lang$html$Html_Attributes$class('editor-cell')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$td,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$id(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'track-',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(track_number),
-									'-cell-11'))),
-							_elm_lang$html$Html_Attributes$class('editor-cell')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$td,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$id(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'track-',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(track_number),
-									'-cell-12'))),
-							_elm_lang$html$Html_Attributes$class('editor-cell')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$td,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$id(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'track-',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(track_number),
-									'-cell-13'))),
-							_elm_lang$html$Html_Attributes$class('editor-cell')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$td,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$id(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'track-',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(track_number),
-									'-cell-14'))),
-							_elm_lang$html$Html_Attributes$class('editor-cell')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$td,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$id(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'track-',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(track_number),
-									'-cell-15'))),
-							_elm_lang$html$Html_Attributes$class('editor-cell')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[])),
-					A2(
-					_elm_lang$html$Html$td,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$id(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'track-',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(track_number),
-									'-cell-16'))),
-							_elm_lang$html$Html_Attributes$class('editor-cell')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[]))
-				]));
-	});
 var _user$project$Main$stepEditorTableHeader = A2(
 	_elm_lang$html$Html$tr,
 	_elm_lang$core$Native_List.fromArray(
@@ -8750,22 +8484,6 @@ var _user$project$Main$stepEditorTableHeader = A2(
 					_elm_lang$html$Html$text('16')
 				]))
 		]));
-var _user$project$Main$stepEditor = function (model) {
-	return A2(
-		_elm_lang$html$Html$table,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html_Attributes$class('table')
-			]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_user$project$Main$stepEditorTableHeader,
-				A2(_user$project$Main$stepEditorTracks, model, 1),
-				A2(_user$project$Main$stepEditorTracks, model, 2),
-				A2(_user$project$Main$stepEditorTracks, model, 3),
-				A2(_user$project$Main$stepEditorTracks, model, 4)
-			]));
-};
 var _user$project$Main$stepEditorHeader = A2(
 	_elm_lang$html$Html$h3,
 	_elm_lang$core$Native_List.fromArray(
@@ -8774,25 +8492,16 @@ var _user$project$Main$stepEditorHeader = A2(
 		[
 			_elm_lang$html$Html$text('Drum Sequence Editor')
 		]));
-var _user$project$Main$stepEditorSection = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html_Attributes$class('page-header')
-			]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_user$project$Main$stepEditorHeader,
-				_user$project$Main$stepEditor(model)
-			]));
-};
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
 		switch (_p0.ctor) {
+			case 'ActivateCell':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'UpdateBeat':
-				return _elm_lang$core$Native_Utils.eq(model.current_beat, model.total_beats) ? {
+				return _elm_lang$core$Native_Utils.eq(
+					model.current_beat,
+					_elm_lang$core$List$length(model.tracks)) ? {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
@@ -8810,7 +8519,7 @@ var _user$project$Main$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{playing: true}),
+						{is_playing: true}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			default:
@@ -8818,19 +8527,49 @@ var _user$project$Main$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{playing: false}),
+						{is_playing: false}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}
 	});
-var _user$project$Main$initModel = {total_beats: 16, bpm: 220, playing: false, current_beat: 1};
+var _user$project$Main$initBeat = function (id) {
+	return {id: id, is_active: false};
+};
+var _user$project$Main$initTrack = function (id) {
+	return {
+		id: id,
+		beats: A2(
+			_elm_lang$core$List$map,
+			_user$project$Main$initBeat,
+			_elm_lang$core$Native_List.fromArray(
+				[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]))
+	};
+};
+var _user$project$Main$initModel = {
+	tracks: A2(
+		_elm_lang$core$List$map,
+		_user$project$Main$initTrack,
+		_elm_lang$core$Native_List.fromArray(
+			[1, 2, 3, 4])),
+	bpm: 220,
+	is_playing: false,
+	current_beat: 1
+};
 var _user$project$Main$init = function () {
 	var model = _user$project$Main$initModel;
 	return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 }();
 var _user$project$Main$Model = F4(
 	function (a, b, c, d) {
-		return {total_beats: a, current_beat: b, playing: c, bpm: d};
+		return {tracks: a, current_beat: b, is_playing: c, bpm: d};
+	});
+var _user$project$Main$Track = F2(
+	function (a, b) {
+		return {beats: a, id: b};
+	});
+var _user$project$Main$Beat = F2(
+	function (a, b) {
+		return {is_active: a, id: b};
 	});
 var _user$project$Main$Stop = {ctor: 'Stop'};
 var _user$project$Main$Play = {ctor: 'Play'};
@@ -8863,6 +8602,79 @@ var _user$project$Main$buttons = A2(
 					_elm_lang$html$Html$text('Stop')
 				]))
 		]));
+var _user$project$Main$ActivateCell = F2(
+	function (a, b) {
+		return {ctor: 'ActivateCell', _0: a, _1: b};
+	});
+var _user$project$Main$stepEditorCell = function (beat) {
+	return A2(
+		_elm_lang$html$Html$td,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$id(
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'track-',
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						_elm_lang$core$Basics$toString(beat.id),
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'-cell-',
+							_elm_lang$core$Basics$toString(beat.id))))),
+				_elm_lang$html$Html_Attributes$class('editor-cell'),
+				_elm_lang$html$Html_Events$onClick(
+				A2(_user$project$Main$ActivateCell, beat.id, beat.id))
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html$text(
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_elm_lang$core$Basics$toString(beat.id),
+					_elm_lang$core$Basics$toString(beat.id)))
+			]));
+};
+var _user$project$Main$stepEditorTrack = function (track) {
+	return A2(
+		_elm_lang$html$Html$tr,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		A2(_elm_lang$core$List$map, _user$project$Main$stepEditorCell, track.beats));
+};
+var _user$project$Main$stepEditorTracks = function (model) {
+	return A2(
+		_elm_lang$html$Html$tbody,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		A2(_elm_lang$core$List$map, _user$project$Main$stepEditorTrack, model.tracks));
+};
+var _user$project$Main$stepEditor = function (model) {
+	return A2(
+		_elm_lang$html$Html$table,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('table')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_user$project$Main$stepEditorTableHeader,
+				_user$project$Main$stepEditorTracks(model)
+			]));
+};
+var _user$project$Main$stepEditorSection = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('page-header')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_user$project$Main$stepEditorHeader,
+				_user$project$Main$stepEditor(model)
+			]));
+};
 var _user$project$Main$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -8880,7 +8692,7 @@ var _user$project$Main$UpdateBeat = function (a) {
 	return {ctor: 'UpdateBeat', _0: a};
 };
 var _user$project$Main$subscriptions = function (model) {
-	var _p1 = model.playing;
+	var _p1 = model.is_playing;
 	if (_p1 === true) {
 		return A2(
 			_elm_lang$core$Time$every,
