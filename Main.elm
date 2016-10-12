@@ -6,37 +6,31 @@ import Html.Events exposing (..)
 import Html.App as App
 import Time exposing (Time, second)
 import String
+import Track exposing (Track)
+import Beat exposing (Beat)
 
 type alias Model =
-  { tracks : List Track
+  { beats : List Beat
+  , tracks : List Track
   , current_beat : Int
   , is_playing : Bool
   , bpm : Int }
 
-type alias Track =
-  { beats : List Beat
-  , id : Int }
-
-type alias Beat =
-  { is_active : Bool
-  , id: Int }
-
-initBeat : Int -> Beat
-initBeat id =
-  { id = id
-  , is_active = False }
-
-initTrack : Int -> Track
-initTrack id =
-  { id = id
-  , beats = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16] |> List.map initBeat }
-
 initModel : Model
 initModel =
-  { tracks = [1,2,3,4] |> List.map initTrack
+  { beats  = (List.map Beat.init beatCount)
+  , tracks = (List.map Track.init trackCount)
   , bpm = 220
   , is_playing = False
   , current_beat = 1 }
+
+beatCount : List Int
+beatCount =
+  [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
+
+trackCount : List Int
+trackCount =
+  [1,2,3,4]
 
 type Msg = UpdateBeat Time | ActivateCell Int Int | Play | Stop
 
@@ -68,44 +62,29 @@ stepEditorHeader =
 stepEditor : Model -> Html Msg
 stepEditor model =
   table [ class "table" ]
-  [ stepEditorTableHeader
+  [ stepEditorTableHeader model
   , stepEditorTracks model ]
 
-stepEditorTableHeader : Html Msg
-stepEditorTableHeader =
-  tr [] [
-    th [] [ text "1" ],
-    th [] [ text "2" ],
-    th [] [ text "3" ],
-    th [] [ text "4" ],
-    th [] [ text "5" ],
-    th [] [ text "6" ],
-    th [] [ text "7" ],
-    th [] [ text "8" ],
-    th [] [ text "9" ],
-    th [] [ text "10" ],
-    th [] [ text "11" ],
-    th [] [ text "12" ],
-    th [] [ text "13" ],
-    th [] [ text "14" ],
-    th [] [ text "15" ],
-    th [] [ text "16" ]
-  ]
+stepEditorTableHeader : Model -> Html Msg
+stepEditorTableHeader model =
+  model.beats
+  |> List.map (\track -> th [] [ text (toString track.id) ])
+  |> tr []
 
 stepEditorTracks : Model -> Html Msg
 stepEditorTracks model =
   model.tracks
-  |> List.map stepEditorTrack
+  |> List.map (\track -> stepEditorTrack model track)
   |> tbody []
 
-stepEditorTrack : Track -> Html Msg
-stepEditorTrack track =
-  track.beats
+stepEditorTrack : Model -> Track -> Html Msg
+stepEditorTrack model track =
+  model.beats
   |> List.map stepEditorCell
   |> tr []
 
 stepEditorCell : Beat -> Html Msg
-stepEditorCell beat  =
+stepEditorCell beat =
   td [ id ( "track-" ++ (toString beat.id) ++ "-cell-" ++ (toString beat.id))
     , class "editor-cell", onClick (ActivateCell beat.id beat.id)
   ] [ text (toString beat.id ++ toString beat.id)]

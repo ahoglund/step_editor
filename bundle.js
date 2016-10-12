@@ -8346,144 +8346,44 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
+var _user$project$Beat$init = function (id) {
+	return {id: id, is_active: false};
+};
+var _user$project$Beat$Beat = F2(
+	function (a, b) {
+		return {is_active: a, id: b};
+	});
+
+var _user$project$Track$init = function (id) {
+	return {id: id};
+};
+var _user$project$Track$Track = function (a) {
+	return {id: a};
+};
+
 var _user$project$Main$interval = function (model) {
 	return 1 / _elm_lang$core$Basics$toFloat(model.bpm);
 };
-var _user$project$Main$stepEditorTableHeader = A2(
-	_elm_lang$html$Html$tr,
-	_elm_lang$core$Native_List.fromArray(
-		[]),
-	_elm_lang$core$Native_List.fromArray(
-		[
-			A2(
-			_elm_lang$html$Html$th,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text('1')
-				])),
-			A2(
-			_elm_lang$html$Html$th,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text('2')
-				])),
-			A2(
-			_elm_lang$html$Html$th,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text('3')
-				])),
-			A2(
-			_elm_lang$html$Html$th,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text('4')
-				])),
-			A2(
-			_elm_lang$html$Html$th,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text('5')
-				])),
-			A2(
-			_elm_lang$html$Html$th,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text('6')
-				])),
-			A2(
-			_elm_lang$html$Html$th,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text('7')
-				])),
-			A2(
-			_elm_lang$html$Html$th,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text('8')
-				])),
-			A2(
-			_elm_lang$html$Html$th,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text('9')
-				])),
-			A2(
-			_elm_lang$html$Html$th,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text('10')
-				])),
-			A2(
-			_elm_lang$html$Html$th,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text('11')
-				])),
-			A2(
-			_elm_lang$html$Html$th,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text('12')
-				])),
-			A2(
-			_elm_lang$html$Html$th,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text('13')
-				])),
-			A2(
-			_elm_lang$html$Html$th,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text('14')
-				])),
-			A2(
-			_elm_lang$html$Html$th,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text('15')
-				])),
-			A2(
-			_elm_lang$html$Html$th,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html$text('16')
-				]))
-		]));
+var _user$project$Main$stepEditorTableHeader = function (model) {
+	return A2(
+		_elm_lang$html$Html$tr,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		A2(
+			_elm_lang$core$List$map,
+			function (track) {
+				return A2(
+					_elm_lang$html$Html$th,
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(
+							_elm_lang$core$Basics$toString(track.id))
+						]));
+			},
+			model.beats));
+};
 var _user$project$Main$stepEditorHeader = A2(
 	_elm_lang$html$Html$h3,
 	_elm_lang$core$Native_List.fromArray(
@@ -8532,25 +8432,13 @@ var _user$project$Main$update = F2(
 				};
 		}
 	});
-var _user$project$Main$initBeat = function (id) {
-	return {id: id, is_active: false};
-};
-var _user$project$Main$initTrack = function (id) {
-	return {
-		id: id,
-		beats: A2(
-			_elm_lang$core$List$map,
-			_user$project$Main$initBeat,
-			_elm_lang$core$Native_List.fromArray(
-				[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]))
-	};
-};
+var _user$project$Main$trackCount = _elm_lang$core$Native_List.fromArray(
+	[1, 2, 3, 4]);
+var _user$project$Main$beatCount = _elm_lang$core$Native_List.fromArray(
+	[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
 var _user$project$Main$initModel = {
-	tracks: A2(
-		_elm_lang$core$List$map,
-		_user$project$Main$initTrack,
-		_elm_lang$core$Native_List.fromArray(
-			[1, 2, 3, 4])),
+	beats: A2(_elm_lang$core$List$map, _user$project$Beat$init, _user$project$Main$beatCount),
+	tracks: A2(_elm_lang$core$List$map, _user$project$Track$init, _user$project$Main$trackCount),
 	bpm: 220,
 	is_playing: false,
 	current_beat: 1
@@ -8559,17 +8447,9 @@ var _user$project$Main$init = function () {
 	var model = _user$project$Main$initModel;
 	return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 }();
-var _user$project$Main$Model = F4(
-	function (a, b, c, d) {
-		return {tracks: a, current_beat: b, is_playing: c, bpm: d};
-	});
-var _user$project$Main$Track = F2(
-	function (a, b) {
-		return {beats: a, id: b};
-	});
-var _user$project$Main$Beat = F2(
-	function (a, b) {
-		return {is_active: a, id: b};
+var _user$project$Main$Model = F5(
+	function (a, b, c, d, e) {
+		return {beats: a, tracks: b, current_beat: c, is_playing: d, bpm: e};
 	});
 var _user$project$Main$Stop = {ctor: 'Stop'};
 var _user$project$Main$Play = {ctor: 'Play'};
@@ -8635,19 +8515,25 @@ var _user$project$Main$stepEditorCell = function (beat) {
 					_elm_lang$core$Basics$toString(beat.id)))
 			]));
 };
-var _user$project$Main$stepEditorTrack = function (track) {
-	return A2(
-		_elm_lang$html$Html$tr,
-		_elm_lang$core$Native_List.fromArray(
-			[]),
-		A2(_elm_lang$core$List$map, _user$project$Main$stepEditorCell, track.beats));
-};
+var _user$project$Main$stepEditorTrack = F2(
+	function (model, track) {
+		return A2(
+			_elm_lang$html$Html$tr,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			A2(_elm_lang$core$List$map, _user$project$Main$stepEditorCell, model.beats));
+	});
 var _user$project$Main$stepEditorTracks = function (model) {
 	return A2(
 		_elm_lang$html$Html$tbody,
 		_elm_lang$core$Native_List.fromArray(
 			[]),
-		A2(_elm_lang$core$List$map, _user$project$Main$stepEditorTrack, model.tracks));
+		A2(
+			_elm_lang$core$List$map,
+			function (track) {
+				return A2(_user$project$Main$stepEditorTrack, model, track);
+			},
+			model.tracks));
 };
 var _user$project$Main$stepEditor = function (model) {
 	return A2(
@@ -8658,7 +8544,7 @@ var _user$project$Main$stepEditor = function (model) {
 			]),
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_user$project$Main$stepEditorTableHeader,
+				_user$project$Main$stepEditorTableHeader(model),
 				_user$project$Main$stepEditorTracks(model)
 			]));
 };
