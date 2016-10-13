@@ -8368,6 +8368,9 @@ var _user$project$Main$setActiveClass = F2(
 	function (beat_id, current_beat) {
 		return _elm_lang$core$Native_Utils.eq(beat_id, current_beat) ? 'active' : 'inactive';
 	});
+var _user$project$Main$setActiveCell = function (beat) {
+	return _elm_lang$core$Native_Utils.eq(beat.is_active, true) ? 'success' : 'off';
+};
 var _user$project$Main$stepEditorTableHeader = function (model) {
 	return A2(
 		_elm_lang$html$Html$tr,
@@ -8396,12 +8399,30 @@ var _user$project$Main$stepEditorHeader = A2(
 		[
 			_elm_lang$html$Html$text('Drum Sequence Editor')
 		]));
+var _user$project$Main$activateBeat = F3(
+	function (track_number, cell_number, beat) {
+		return _elm_lang$core$Native_Utils.eq(beat.id, cell_number) ? _elm_lang$core$Native_Utils.update(
+			beat,
+			{is_active: true}) : beat;
+	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
 		switch (_p0.ctor) {
-			case 'ActivateBeat':
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'ActivateCell':
+				var beats = A2(
+					_elm_lang$core$List$map,
+					function (beat) {
+						return A3(_user$project$Main$activateBeat, _p0._0, _p0._1, beat);
+					},
+					model.beats);
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{beats: beats}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'SetCurrentBeat':
 				return _elm_lang$core$Native_Utils.eq(
 					model.current_beat,
@@ -8486,9 +8507,9 @@ var _user$project$Main$buttons = A2(
 					_elm_lang$html$Html$text('Stop')
 				]))
 		]));
-var _user$project$Main$ActivateBeat = F2(
+var _user$project$Main$ActivateCell = F2(
 	function (a, b) {
-		return {ctor: 'ActivateBeat', _0: a, _1: b};
+		return {ctor: 'ActivateCell', _0: a, _1: b};
 	});
 var _user$project$Main$stepEditorCell = F3(
 	function (model, track, beat) {
@@ -8508,9 +8529,15 @@ var _user$project$Main$stepEditorCell = F3(
 								'-cell-',
 								_elm_lang$core$Basics$toString(beat.id))))),
 					_elm_lang$html$Html_Attributes$class(
-					A2(_user$project$Main$setActiveClass, beat.id, model.current_beat)),
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						A2(_user$project$Main$setActiveClass, beat.id, model.current_beat),
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							' ',
+							_user$project$Main$setActiveCell(beat)))),
 					_elm_lang$html$Html_Events$onClick(
-					A2(_user$project$Main$ActivateBeat, track.id, beat.id))
+					A2(_user$project$Main$ActivateCell, track.id, beat.id))
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[]));

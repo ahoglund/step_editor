@@ -32,13 +32,17 @@ trackCount : List Int
 trackCount =
   [1,2,3,4]
 
-type Msg = SetCurrentBeat Time | ActivateBeat Int Int | Play | Stop
+type Msg = SetCurrentBeat Time | ActivateCell Int Int | Play | Stop
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    ActivateBeat track_number cell_number ->
-      ( model, Cmd.none )
+    ActivateCell track_number cell_number ->
+      let
+        beats = model.beats
+        |> List.map (\beat -> activateBeat track_number cell_number beat)
+      in
+        ({ model | beats = beats }, Cmd.none)
     SetCurrentBeat time ->
       if model.current_beat == List.length model.beats then
         ( { model | current_beat = 1 }, Cmd.none )
@@ -48,6 +52,13 @@ update msg model =
       ( { model | is_playing = True  }, Cmd.none )
     Stop ->
       ( { model | is_playing = False }, Cmd.none )
+
+activateBeat : Int -> Int -> Beat -> Beat
+activateBeat track_number cell_number beat =
+  if beat.id == cell_number then
+    { beat | is_active = True }
+  else
+    beat
 
 stepEditorSection : Model -> Html Msg
 stepEditorSection model =
@@ -86,8 +97,15 @@ stepEditorTrack model track =
 stepEditorCell : Model -> Track -> Beat -> Html Msg
 stepEditorCell model track beat =
   td [ id ("track-" ++ (toString track.id) ++ "-cell-" ++ (toString beat.id))
-     , class (setActiveClass beat.id model.current_beat)
-     , onClick (ActivateBeat track.id beat.id)] [ ]
+     , class ((setActiveClass beat.id model.current_beat) ++ " " ++ setActiveCell beat)
+     , onClick (ActivateCell track.id beat.id)] [ ]
+
+setActiveCell : Beat -> String
+setActiveCell beat =
+  if beat.is_active == True then
+    "success"
+  else
+    "off"
 
 setActiveClass : Int -> Int -> String
 setActiveClass beat_id current_beat =
