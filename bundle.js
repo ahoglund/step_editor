@@ -8364,6 +8364,10 @@ var _user$project$Track$Track = function (a) {
 var _user$project$Main$interval = function (model) {
 	return 1 / _elm_lang$core$Basics$toFloat(model.bpm);
 };
+var _user$project$Main$setActiveClass = F2(
+	function (beat_id, current_beat) {
+		return _elm_lang$core$Native_Utils.eq(beat_id, current_beat) ? 'active' : 'inactive';
+	});
 var _user$project$Main$stepEditorTableHeader = function (model) {
 	return A2(
 		_elm_lang$html$Html$tr,
@@ -8396,12 +8400,12 @@ var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
 		switch (_p0.ctor) {
-			case 'ActivateCell':
+			case 'ActivateBeat':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'UpdateBeat':
+			case 'SetCurrentBeat':
 				return _elm_lang$core$Native_Utils.eq(
 					model.current_beat,
-					_elm_lang$core$List$length(model.tracks)) ? {
+					_elm_lang$core$List$length(model.beats)) ? {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
@@ -8439,7 +8443,7 @@ var _user$project$Main$beatCount = _elm_lang$core$Native_List.fromArray(
 var _user$project$Main$initModel = {
 	beats: A2(_elm_lang$core$List$map, _user$project$Beat$init, _user$project$Main$beatCount),
 	tracks: A2(_elm_lang$core$List$map, _user$project$Track$init, _user$project$Main$trackCount),
-	bpm: 220,
+	bpm: 120,
 	is_playing: false,
 	current_beat: 1
 };
@@ -8482,46 +8486,47 @@ var _user$project$Main$buttons = A2(
 					_elm_lang$html$Html$text('Stop')
 				]))
 		]));
-var _user$project$Main$ActivateCell = F2(
+var _user$project$Main$ActivateBeat = F2(
 	function (a, b) {
-		return {ctor: 'ActivateCell', _0: a, _1: b};
+		return {ctor: 'ActivateBeat', _0: a, _1: b};
 	});
-var _user$project$Main$stepEditorCell = function (beat) {
-	return A2(
-		_elm_lang$html$Html$td,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html_Attributes$id(
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					'track-',
+var _user$project$Main$stepEditorCell = F3(
+	function (model, track, beat) {
+		return A2(
+			_elm_lang$html$Html$td,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$id(
 					A2(
 						_elm_lang$core$Basics_ops['++'],
-						_elm_lang$core$Basics$toString(beat.id),
+						'track-',
 						A2(
 							_elm_lang$core$Basics_ops['++'],
-							'-cell-',
-							_elm_lang$core$Basics$toString(beat.id))))),
-				_elm_lang$html$Html_Attributes$class('editor-cell'),
-				_elm_lang$html$Html_Events$onClick(
-				A2(_user$project$Main$ActivateCell, beat.id, beat.id))
-			]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html$text(
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					_elm_lang$core$Basics$toString(beat.id),
-					_elm_lang$core$Basics$toString(beat.id)))
-			]));
-};
+							_elm_lang$core$Basics$toString(track.id),
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'-cell-',
+								_elm_lang$core$Basics$toString(beat.id))))),
+					_elm_lang$html$Html_Attributes$class(
+					A2(_user$project$Main$setActiveClass, beat.id, model.current_beat)),
+					_elm_lang$html$Html_Events$onClick(
+					A2(_user$project$Main$ActivateBeat, track.id, beat.id))
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[]));
+	});
 var _user$project$Main$stepEditorTrack = F2(
 	function (model, track) {
 		return A2(
 			_elm_lang$html$Html$tr,
 			_elm_lang$core$Native_List.fromArray(
 				[]),
-			A2(_elm_lang$core$List$map, _user$project$Main$stepEditorCell, model.beats));
+			A2(
+				_elm_lang$core$List$map,
+				function (beat) {
+					return A3(_user$project$Main$stepEditorCell, model, track, beat);
+				},
+				model.beats));
 	});
 var _user$project$Main$stepEditorTracks = function (model) {
 	return A2(
@@ -8540,7 +8545,7 @@ var _user$project$Main$stepEditor = function (model) {
 		_elm_lang$html$Html$table,
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$html$Html_Attributes$class('table')
+				_elm_lang$html$Html_Attributes$class('table table-hover table-bordered')
 			]),
 		_elm_lang$core$Native_List.fromArray(
 			[
@@ -8574,8 +8579,8 @@ var _user$project$Main$view = function (model) {
 				_user$project$Main$buttons
 			]));
 };
-var _user$project$Main$UpdateBeat = function (a) {
-	return {ctor: 'UpdateBeat', _0: a};
+var _user$project$Main$SetCurrentBeat = function (a) {
+	return {ctor: 'SetCurrentBeat', _0: a};
 };
 var _user$project$Main$subscriptions = function (model) {
 	var _p1 = model.is_playing;
@@ -8583,7 +8588,7 @@ var _user$project$Main$subscriptions = function (model) {
 		return A2(
 			_elm_lang$core$Time$every,
 			_elm_lang$core$Time$minute * _user$project$Main$interval(model),
-			_user$project$Main$UpdateBeat);
+			_user$project$Main$SetCurrentBeat);
 	} else {
 		return _elm_lang$core$Platform_Sub$none;
 	}

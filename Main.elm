@@ -20,7 +20,7 @@ initModel : Model
 initModel =
   { beats  = (List.map Beat.init beatCount)
   , tracks = (List.map Track.init trackCount)
-  , bpm = 220
+  , bpm = 120
   , is_playing = False
   , current_beat = 1 }
 
@@ -32,22 +32,22 @@ trackCount : List Int
 trackCount =
   [1,2,3,4]
 
-type Msg = UpdateBeat Time | ActivateCell Int Int | Play | Stop
+type Msg = SetCurrentBeat Time | ActivateBeat Int Int | Play | Stop
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        ActivateCell track_number cell_number ->
-          ( model, Cmd.none )
-        UpdateBeat time ->
-          if model.current_beat == List.length model.tracks then
-            ( { model | current_beat = 1 }, Cmd.none )
-          else
-            ( { model | current_beat = model.current_beat + 1 }, Cmd.none )
-        Play ->
-          ( { model | is_playing = True  }, Cmd.none )
-        Stop ->
-          ( { model | is_playing = False }, Cmd.none )
+  case msg of
+    ActivateBeat track_number cell_number ->
+      ( model, Cmd.none )
+    SetCurrentBeat time ->
+      if model.current_beat == List.length model.beats then
+        ( { model | current_beat = 1 }, Cmd.none )
+      else
+        ( { model | current_beat = model.current_beat + 1 }, Cmd.none )
+    Play ->
+      ( { model | is_playing = True  }, Cmd.none )
+    Stop ->
+      ( { model | is_playing = False }, Cmd.none )
 
 stepEditorSection : Model -> Html Msg
 stepEditorSection model =
@@ -61,7 +61,7 @@ stepEditorHeader =
 
 stepEditor : Model -> Html Msg
 stepEditor model =
-  table [ class "table" ]
+  table [ class "table table-hover table-bordered" ]
   [ stepEditorTableHeader model
   , stepEditorTracks model ]
 
@@ -80,14 +80,21 @@ stepEditorTracks model =
 stepEditorTrack : Model -> Track -> Html Msg
 stepEditorTrack model track =
   model.beats
-  |> List.map stepEditorCell
+  |> List.map (\beat -> stepEditorCell model track beat)
   |> tr []
 
-stepEditorCell : Beat -> Html Msg
-stepEditorCell beat =
-  td [ id ( "track-" ++ (toString beat.id) ++ "-cell-" ++ (toString beat.id))
-    , class "editor-cell", onClick (ActivateCell beat.id beat.id)
-  ] [ text (toString beat.id ++ toString beat.id)]
+stepEditorCell : Model -> Track -> Beat -> Html Msg
+stepEditorCell model track beat =
+  td [ id ("track-" ++ (toString track.id) ++ "-cell-" ++ (toString beat.id))
+     , class (setActiveClass beat.id model.current_beat)
+     , onClick (ActivateBeat track.id beat.id)] [ ]
+
+setActiveClass : Int -> Int -> String
+setActiveClass beat_id current_beat =
+  if beat_id == current_beat then
+    "active"
+  else
+    "inactive"
 
 buttons : Html Msg
 buttons =
@@ -107,7 +114,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
   case model.is_playing of
     True ->
-      Time.every (Time.minute * (interval model)) UpdateBeat
+      Time.every (Time.minute * (interval model)) SetCurrentBeat
     False ->
       Sub.none
 

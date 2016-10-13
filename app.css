@@ -13,13 +13,7 @@ th {
   text-align: center;
 }
 
-.editor-cell {
+td {
   width: 40.5px;
   height: 20.5px;
-  background-color: white;
-  border: 1px solid grey;
-}
-
-.editor-cell .active {
-  background-color: grey;
 }

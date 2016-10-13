@@ -7,5 +7,5 @@ type alias Beat =
 init : Int -> Beat
 init id =
   { id = id
-    , is_active = False }
+  , is_active = False }
 
