@@ -38,7 +38,16 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
     ActivateCell track beat ->
-      (model, Cmd.none)
+      let
+        tracks = model.tracks
+        |> List.map (\t ->
+          let
+            bts = List.map (\b -> activateBeat t b beat) t.beats
+          in
+          ({ t | beats = bts })
+        )
+      in
+        ({ model | tracks = tracks }, Cmd.none)
     SetCurrentBeat time ->
       if model.current_beat == List.length model.total_beats then
         ({ model | current_beat = 1 }, Cmd.none )
@@ -49,12 +58,12 @@ update msg model =
     Stop ->
       ({ model | is_playing = False }, Cmd.none )
 
-activateBeat : Track -> Beat -> Track
-activateBeat track beat =
-  if beat.track_id == track.id then
-    track
+activateBeat : Track -> Beat -> Beat -> Beat
+activateBeat track beat1 beat2 =
+  if track.id == beat2.track_id && beat1.id == beat2.id  then
+    ({ beat1 | is_active = True })
   else
-    track
+    (beat1)
 
 stepEditorSection : Model -> Html Msg
 stepEditorSection model =

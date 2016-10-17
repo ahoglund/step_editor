@@ -8403,16 +8403,38 @@ var _user$project$Main$stepEditorHeader = A2(
 		[
 			_elm_lang$html$Html$text('Drum Sequence Editor')
 		]));
-var _user$project$Main$activateBeat = F2(
-	function (track, beat) {
-		return _elm_lang$core$Native_Utils.eq(beat.track_id, track.id) ? track : track;
+var _user$project$Main$activateBeat = F3(
+	function (track, beat1, beat2) {
+		return (_elm_lang$core$Native_Utils.eq(track.id, beat2.track_id) && _elm_lang$core$Native_Utils.eq(beat1.id, beat2.id)) ? _elm_lang$core$Native_Utils.update(
+			beat1,
+			{is_active: true}) : beat1;
 	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
 		switch (_p0.ctor) {
 			case 'ActivateCell':
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				var tracks = A2(
+					_elm_lang$core$List$map,
+					function (t) {
+						var bts = A2(
+							_elm_lang$core$List$map,
+							function (b) {
+								return A3(_user$project$Main$activateBeat, t, b, _p0._1);
+							},
+							t.beats);
+						return _elm_lang$core$Native_Utils.update(
+							t,
+							{beats: bts});
+					},
+					model.tracks);
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{tracks: tracks}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'SetCurrentBeat':
 				return _elm_lang$core$Native_Utils.eq(
 					model.current_beat,
