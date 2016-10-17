@@ -8487,7 +8487,13 @@ var _user$project$Main$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			default:
-				return {
+				return _elm_lang$core$Native_Utils.eq(model.is_playing, false) ? {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{current_beat: _elm_lang$core$Maybe$Nothing, is_playing: false}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				} : {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,

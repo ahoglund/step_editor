@@ -63,7 +63,10 @@ update msg model =
     Play ->
       ({ model | is_playing = True  }, Cmd.none )
     Stop ->
-      ({ model | is_playing = False }, Cmd.none )
+      if model.is_playing == False then
+        ({ model | current_beat = Nothing, is_playing = False }, Cmd.none )
+      else
+        ({ model | is_playing = False }, Cmd.none )
 
 activateCell : Track -> Cell -> Cell -> Cell
 activateCell track beat1 beat2 =
