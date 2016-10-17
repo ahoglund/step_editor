@@ -61,7 +61,10 @@ update msg model =
           else
             ({ model | current_beat = Just (beat + 1)}, Cmd.none )
     Play ->
-      ({ model | is_playing = True  }, Cmd.none )
+      if model.is_playing == True then
+        ({ model | current_beat = Just 1 }, Cmd.none )
+      else
+        ({ model | is_playing = True }, Cmd.none )
     Stop ->
       if model.is_playing == False then
         ({ model | current_beat = Nothing, is_playing = False }, Cmd.none )
