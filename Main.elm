@@ -26,11 +26,11 @@ initModel tracks =
 
 beatCount : List Int
 beatCount =
-  [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
+  [1..16]
 
 trackCount : List Int
 trackCount =
-  [1,2,3,4,5,6,7,8]
+  [1..4]
 
 type Msg = SetCurrentBeat Time | ToggleCell Track Cell | Play | Stop
 
@@ -143,8 +143,10 @@ buttons : Html Msg
 buttons =
   div []
   [
-    button [ class "btn btn-default" , onClick Play ] [ text "Play" ],
-    button [ class "btn btn-default" , onClick Stop ] [ text "Stop" ]
+    button [ class "btn btn-success" , onClick Play ]
+      [ span [ class "glyphicon glyphicon-play" ] [] ],
+    button [ class "btn btn-danger" , onClick Stop ]
+      [ span [ class "glyphicon glyphicon-stop" ] [] ]
   ]
 
 view : Model -> Html Msg
@@ -169,11 +171,7 @@ init =
   let
     tracks = trackCount
     |> List.map (\track_id ->
-        Track.init track_id (
-          List.map (\beat_id ->
-            Cell.init beat_id track_id
-          ) beatCount
-        )
+        Track.init track_id (List.map (\beat_id -> Cell.init beat_id track_id) beatCount)
        )
     model  = initModel tracks
   in

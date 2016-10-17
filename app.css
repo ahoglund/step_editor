@@ -17,3 +17,7 @@ td {
   width: 40.5px;
   height: 20.5px;
 }
+
+button {
+  margin-right: 4px;
+}

@@ -8510,10 +8510,8 @@ var _user$project$Main$update = F2(
 				};
 		}
 	});
-var _user$project$Main$trackCount = _elm_lang$core$Native_List.fromArray(
-	[1, 2, 3, 4, 5, 6, 7, 8]);
-var _user$project$Main$beatCount = _elm_lang$core$Native_List.fromArray(
-	[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+var _user$project$Main$trackCount = _elm_lang$core$Native_List.range(1, 4);
+var _user$project$Main$beatCount = _elm_lang$core$Native_List.range(1, 16);
 var _user$project$Main$initModel = function (tracks) {
 	return {tracks: tracks, total_beats: _user$project$Main$beatCount, bpm: 250, is_playing: false, current_beat: _elm_lang$core$Maybe$Nothing};
 };
@@ -8551,23 +8549,37 @@ var _user$project$Main$buttons = A2(
 			_elm_lang$html$Html$button,
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html_Attributes$class('btn btn-default'),
+					_elm_lang$html$Html_Attributes$class('btn btn-success'),
 					_elm_lang$html$Html_Events$onClick(_user$project$Main$Play)
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html$text('Play')
+					A2(
+					_elm_lang$html$Html$span,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('glyphicon glyphicon-play')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[]))
 				])),
 			A2(
 			_elm_lang$html$Html$button,
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html_Attributes$class('btn btn-default'),
+					_elm_lang$html$Html_Attributes$class('btn btn-danger'),
 					_elm_lang$html$Html_Events$onClick(_user$project$Main$Stop)
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html$text('Stop')
+					A2(
+					_elm_lang$html$Html$span,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('glyphicon glyphicon-stop')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[]))
 				]))
 		]));
 var _user$project$Main$ToggleCell = F2(
