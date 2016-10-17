@@ -7,7 +7,7 @@ import Html.App as App
 import Time exposing (Time, second)
 import String
 import Track exposing (Track)
-import Beat exposing (Beat)
+import Cell exposing (Cell)
 
 type alias Model =
   { tracks : List Track
@@ -32,7 +32,7 @@ trackCount : List Int
 trackCount =
   [1,2,3,4,5,6,7,8]
 
-type Msg = SetCurrentBeat Time | ToggleCell Track Beat | Play | Stop
+type Msg = SetCurrentBeat Time | ToggleCell Track Cell | Play | Stop
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -42,7 +42,7 @@ update msg model =
         tracks = model.tracks
         |> List.map (\t ->
           let
-            bts = List.map (\b -> activateBeat t b beat) t.beats
+            bts = List.map (\b -> activateCell t b beat) t.beats
           in
           ({ t | beats = bts })
         )
@@ -58,8 +58,8 @@ update msg model =
     Stop ->
       ({ model | is_playing = False }, Cmd.none )
 
-activateBeat : Track -> Beat -> Beat -> Beat
-activateBeat track beat1 beat2 =
+activateCell : Track -> Cell -> Cell -> Cell
+activateCell track beat1 beat2 =
   if track.id == beat2.track_id && beat1.id == beat2.id  then
     if beat1.is_active == True then
       ({ beat1 | is_active = False })
@@ -102,13 +102,13 @@ stepEditorTrack model track =
   |> List.map (\beat -> stepEditorCell model track beat)
   |> tr []
 
-stepEditorCell : Model -> Track -> Beat -> Html Msg
+stepEditorCell : Model -> Track -> Cell -> Html Msg
 stepEditorCell model track beat =
   td [ id ("track-" ++ (toString track.id) ++ "-cell-" ++ (toString beat.id))
      , class ((setActiveClass beat.id model.current_beat) ++ " " ++ (setActiveCell track beat))
      , onClick (ToggleCell track beat)] [ ]
 
-setActiveCell : Track -> Beat -> String
+setActiveCell : Track -> Cell -> String
 setActiveCell track beat =
   if beat.is_active == True && beat.track_id == track.id then
     "success"
@@ -154,7 +154,7 @@ init =
     |> List.map (\track_id ->
         Track.init track_id (
           List.map (\beat_id ->
-            Beat.init beat_id track_id
+            Cell.init beat_id track_id
           ) beatCount
         )
        )

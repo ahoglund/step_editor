@@ -8346,11 +8346,13 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
-var _user$project$Beat$init = F2(
+var _user$project$Cell$initCells = _elm_lang$core$Native_List.fromArray(
+	[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+var _user$project$Cell$init = F2(
 	function (id, track_id) {
 		return {id: id, track_id: track_id, is_active: false};
 	});
-var _user$project$Beat$Beat = F3(
+var _user$project$Cell$Cell = F3(
 	function (a, b, c) {
 		return {is_active: a, track_id: b, id: c};
 	});
@@ -8403,7 +8405,7 @@ var _user$project$Main$stepEditorHeader = A2(
 		[
 			_elm_lang$html$Html$text('Drum Sequence Editor')
 		]));
-var _user$project$Main$activateBeat = F3(
+var _user$project$Main$activateCell = F3(
 	function (track, beat1, beat2) {
 		return (_elm_lang$core$Native_Utils.eq(track.id, beat2.track_id) && _elm_lang$core$Native_Utils.eq(beat1.id, beat2.id)) ? (_elm_lang$core$Native_Utils.eq(beat1.is_active, true) ? _elm_lang$core$Native_Utils.update(
 			beat1,
@@ -8422,7 +8424,7 @@ var _user$project$Main$update = F2(
 						var bts = A2(
 							_elm_lang$core$List$map,
 							function (b) {
-								return A3(_user$project$Main$activateBeat, t, b, _p0._1);
+								return A3(_user$project$Main$activateCell, t, b, _p0._1);
 							},
 							t.beats);
 						return _elm_lang$core$Native_Utils.update(
@@ -8488,7 +8490,7 @@ var _user$project$Main$init = function () {
 				A2(
 					_elm_lang$core$List$map,
 					function (beat_id) {
-						return A2(_user$project$Beat$init, beat_id, track_id);
+						return A2(_user$project$Cell$init, beat_id, track_id);
 					},
 					_user$project$Main$beatCount));
 		},
