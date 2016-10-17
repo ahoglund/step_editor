@@ -8405,15 +8405,17 @@ var _user$project$Main$stepEditorHeader = A2(
 		]));
 var _user$project$Main$activateBeat = F3(
 	function (track, beat1, beat2) {
-		return (_elm_lang$core$Native_Utils.eq(track.id, beat2.track_id) && _elm_lang$core$Native_Utils.eq(beat1.id, beat2.id)) ? _elm_lang$core$Native_Utils.update(
+		return (_elm_lang$core$Native_Utils.eq(track.id, beat2.track_id) && _elm_lang$core$Native_Utils.eq(beat1.id, beat2.id)) ? (_elm_lang$core$Native_Utils.eq(beat1.is_active, true) ? _elm_lang$core$Native_Utils.update(
 			beat1,
-			{is_active: true}) : beat1;
+			{is_active: false}) : _elm_lang$core$Native_Utils.update(
+			beat1,
+			{is_active: true})) : beat1;
 	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
 		switch (_p0.ctor) {
-			case 'ActivateCell':
+			case 'ToggleCell':
 				var tracks = A2(
 					_elm_lang$core$List$map,
 					function (t) {
@@ -8529,9 +8531,9 @@ var _user$project$Main$buttons = A2(
 					_elm_lang$html$Html$text('Stop')
 				]))
 		]));
-var _user$project$Main$ActivateCell = F2(
+var _user$project$Main$ToggleCell = F2(
 	function (a, b) {
-		return {ctor: 'ActivateCell', _0: a, _1: b};
+		return {ctor: 'ToggleCell', _0: a, _1: b};
 	});
 var _user$project$Main$stepEditorCell = F3(
 	function (model, track, beat) {
@@ -8559,7 +8561,7 @@ var _user$project$Main$stepEditorCell = F3(
 							' ',
 							A2(_user$project$Main$setActiveCell, track, beat)))),
 					_elm_lang$html$Html_Events$onClick(
-					A2(_user$project$Main$ActivateCell, track, beat))
+					A2(_user$project$Main$ToggleCell, track, beat))
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[]));

@@ -32,12 +32,12 @@ trackCount : List Int
 trackCount =
   [1,2,3,4,5,6,7,8]
 
-type Msg = SetCurrentBeat Time | ActivateCell Track Beat | Play | Stop
+type Msg = SetCurrentBeat Time | ToggleCell Track Beat | Play | Stop
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    ActivateCell track beat ->
+    ToggleCell track beat ->
       let
         tracks = model.tracks
         |> List.map (\t ->
@@ -61,7 +61,10 @@ update msg model =
 activateBeat : Track -> Beat -> Beat -> Beat
 activateBeat track beat1 beat2 =
   if track.id == beat2.track_id && beat1.id == beat2.id  then
-    ({ beat1 | is_active = True })
+    if beat1.is_active == True then
+      ({ beat1 | is_active = False })
+    else
+      ({ beat1 | is_active = True })
   else
     (beat1)
 
@@ -103,7 +106,7 @@ stepEditorCell : Model -> Track -> Beat -> Html Msg
 stepEditorCell model track beat =
   td [ id ("track-" ++ (toString track.id) ++ "-cell-" ++ (toString beat.id))
      , class ((setActiveClass beat.id model.current_beat) ++ " " ++ (setActiveCell track beat))
-     , onClick (ActivateCell track beat)] [ ]
+     , onClick (ToggleCell track beat)] [ ]
 
 setActiveCell : Track -> Beat -> String
 setActiveCell track beat =
