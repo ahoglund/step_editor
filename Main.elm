@@ -12,7 +12,7 @@ import Cell exposing (Cell)
 type alias Model =
   { tracks : List Track
   , total_beats : List Int
-  , current_beat : Int
+  , current_beat : Maybe Int
   , is_playing : Bool
   , bpm : Int }
 
@@ -20,9 +20,9 @@ initModel : List Track -> Model
 initModel tracks =
   { tracks = tracks
   , total_beats = beatCount
-  , bpm = 120
+  , bpm = 250
   , is_playing = False
-  , current_beat = 1 }
+  , current_beat = Nothing }
 
 beatCount : List Int
 beatCount =
@@ -42,17 +42,24 @@ update msg model =
         tracks = model.tracks
         |> List.map (\t ->
           let
-            bts = List.map (\b -> activateCell t b beat) t.beats
+            new_beats = List.map (\b -> activateCell t b beat) t.beats
           in
-          ({ t | beats = bts })
+          ({ t | beats = new_beats })
         )
       in
         ({ model | tracks = tracks }, Cmd.none)
     SetCurrentBeat time ->
-      if model.current_beat == List.length model.total_beats then
-        ({ model | current_beat = 1 }, Cmd.none )
-      else
-        ({ model | current_beat = model.current_beat + 1 }, Cmd.none )
+      case model.current_beat of
+        Nothing ->
+          if model.is_playing == True then
+            ({ model | current_beat = Just 1 }, Cmd.none )
+          else
+            (model, Cmd.none)
+        Just beat ->
+          if beat == List.length model.total_beats then
+            ({ model | current_beat = Just 1 }, Cmd.none )
+          else
+            ({ model | current_beat = Just (beat + 1)}, Cmd.none )
     Play ->
       ({ model | is_playing = True  }, Cmd.none )
     Stop ->
@@ -115,12 +122,16 @@ setActiveCell track beat =
   else
     ""
 
-setActiveClass : Int -> Int -> String
+setActiveClass : Int -> Maybe Int -> String
 setActiveClass beat_id current_beat =
-  if beat_id == current_beat then
-    "active"
-  else
-    "inactive"
+  case current_beat of
+    Nothing ->
+      "inactive"
+    Just beat ->
+      if beat_id == beat then
+        "active"
+      else
+        "inactive"
 
 buttons : Html Msg
 buttons =

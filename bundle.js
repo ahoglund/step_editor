@@ -8371,7 +8371,12 @@ var _user$project$Main$interval = function (model) {
 };
 var _user$project$Main$setActiveClass = F2(
 	function (beat_id, current_beat) {
-		return _elm_lang$core$Native_Utils.eq(beat_id, current_beat) ? 'active' : 'inactive';
+		var _p0 = current_beat;
+		if (_p0.ctor === 'Nothing') {
+			return 'inactive';
+		} else {
+			return _elm_lang$core$Native_Utils.eq(beat_id, _p0._0) ? 'active' : 'inactive';
+		}
 	});
 var _user$project$Main$setActiveCell = F2(
 	function (track, beat) {
@@ -8415,21 +8420,21 @@ var _user$project$Main$activateCell = F3(
 	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p0 = msg;
-		switch (_p0.ctor) {
+		var _p1 = msg;
+		switch (_p1.ctor) {
 			case 'ToggleCell':
 				var tracks = A2(
 					_elm_lang$core$List$map,
 					function (t) {
-						var bts = A2(
+						var new_beats = A2(
 							_elm_lang$core$List$map,
 							function (b) {
-								return A3(_user$project$Main$activateCell, t, b, _p0._1);
+								return A3(_user$project$Main$activateCell, t, b, _p1._1);
 							},
 							t.beats);
 						return _elm_lang$core$Native_Utils.update(
 							t,
-							{beats: bts});
+							{beats: new_beats});
 					},
 					model.tracks);
 				return {
@@ -8440,21 +8445,39 @@ var _user$project$Main$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'SetCurrentBeat':
-				return _elm_lang$core$Native_Utils.eq(
-					model.current_beat,
-					_elm_lang$core$List$length(model.total_beats)) ? {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{current_beat: 1}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				} : {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{current_beat: model.current_beat + 1}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
+				var _p2 = model.current_beat;
+				if (_p2.ctor === 'Nothing') {
+					return _elm_lang$core$Native_Utils.eq(model.is_playing, true) ? {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								current_beat: _elm_lang$core$Maybe$Just(1)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				} else {
+					var _p3 = _p2._0;
+					return _elm_lang$core$Native_Utils.eq(
+						_p3,
+						_elm_lang$core$List$length(model.total_beats)) ? {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								current_beat: _elm_lang$core$Maybe$Just(1)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					} : {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								current_beat: _elm_lang$core$Maybe$Just(_p3 + 1)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
 			case 'Play':
 				return {
 					ctor: '_Tuple2',
@@ -8478,7 +8501,7 @@ var _user$project$Main$trackCount = _elm_lang$core$Native_List.fromArray(
 var _user$project$Main$beatCount = _elm_lang$core$Native_List.fromArray(
 	[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
 var _user$project$Main$initModel = function (tracks) {
-	return {tracks: tracks, total_beats: _user$project$Main$beatCount, bpm: 120, is_playing: false, current_beat: 1};
+	return {tracks: tracks, total_beats: _user$project$Main$beatCount, bpm: 250, is_playing: false, current_beat: _elm_lang$core$Maybe$Nothing};
 };
 var _user$project$Main$init = function () {
 	var tracks = A2(
@@ -8636,8 +8659,8 @@ var _user$project$Main$SetCurrentBeat = function (a) {
 	return {ctor: 'SetCurrentBeat', _0: a};
 };
 var _user$project$Main$subscriptions = function (model) {
-	var _p1 = model.is_playing;
-	if (_p1 === true) {
+	var _p4 = model.is_playing;
+	if (_p4 === true) {
 		return A2(
 			_elm_lang$core$Time$every,
 			_elm_lang$core$Time$minute * _user$project$Main$interval(model),
