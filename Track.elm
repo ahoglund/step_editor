@@ -4,9 +4,9 @@ import Cell exposing (Cell)
 
 type alias Track =
   { id : Int
-  , beats : List Cell }
+  , cells : List Cell }
 
 init : Int -> List Cell -> Track
-init id beats =
+init id cells =
   { id = id
-  , beats = beats }
+  , cells = cells }

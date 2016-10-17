@@ -11,7 +11,7 @@ import Cell exposing (Cell)
 
 type alias Model =
   { tracks : List Track
-  , total_beats : List Int
+  , total_beats : Int
   , current_beat : Maybe Int
   , is_playing : Bool
   , bpm : Int }
@@ -19,7 +19,7 @@ type alias Model =
 initModel : List Track -> Model
 initModel tracks =
   { tracks = tracks
-  , total_beats = beatCount
+  , total_beats = List.length beatCount
   , bpm = 250
   , is_playing = False
   , current_beat = Nothing }
@@ -32,19 +32,25 @@ trackCount : List Int
 trackCount =
   [1..4]
 
-type Msg = SetCurrentBeat Time | ToggleCell Track Cell | Play | Stop
+type Msg = SetCurrentBeat Time
+  | UpdateTotalBeats Int
+  | ToggleCell Track Cell
+  | Play
+  | Stop
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
+    UpdateTotalBeats new_total ->
+      ({ model | total_beats = new_total }, Cmd.none)
     ToggleCell track beat ->
       let
         tracks = model.tracks
         |> List.map (\t ->
           let
-            new_beats = List.map (\b -> activateCell t b beat) t.beats
+            new_cells = List.map (\b -> activateCell t b beat) t.cells
           in
-          ({ t | beats = new_beats })
+          ({ t | cells = new_cells })
         )
       in
         ({ model | tracks = tracks }, Cmd.none)
@@ -56,7 +62,7 @@ update msg model =
           else
             (model, Cmd.none)
         Just beat ->
-          if beat == List.length model.total_beats then
+          if beat == model.total_beats then
             ({ model | current_beat = Just 1 }, Cmd.none )
           else
             ({ model | current_beat = Just (beat + 1)}, Cmd.none )
@@ -99,7 +105,7 @@ stepEditor model =
 
 stepEditorTableHeader : Model -> Html Msg
 stepEditorTableHeader model =
-  model.total_beats
+  [1..model.total_beats]
   |> List.map (\beat_id -> th [] [ text (toString beat_id) ])
   |> tr []
 
@@ -111,7 +117,7 @@ stepEditorTracks model =
 
 stepEditorTrack : Model -> Track -> Html Msg
 stepEditorTrack model track =
-  track.beats
+  track.cells
   |> List.map (\beat -> stepEditorCell model track beat)
   |> tr []
 
@@ -139,21 +145,25 @@ setActiveClass beat_id current_beat =
       else
         "inactive"
 
-buttons : Html Msg
-buttons =
+buttons : Model -> Html Msg
+buttons model =
   div []
   [
     button [ class "btn btn-success" , onClick Play ]
       [ span [ class "glyphicon glyphicon-play" ] [] ],
     button [ class "btn btn-danger" , onClick Stop ]
-      [ span [ class "glyphicon glyphicon-stop" ] [] ]
+      [ span [ class "glyphicon glyphicon-stop" ] [] ],
+    button [ class "btn btn-default" , onClick (UpdateTotalBeats 16)]
+      [ text "16 beats" ],
+    button [ class "btn btn-default" , onClick (UpdateTotalBeats 32)]
+      [  text "32 beats" ]
   ]
 
 view : Model -> Html Msg
 view model =
     div [ class "container" ]
         [ stepEditorSection model,
-          buttons ]
+          buttons model ]
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
@@ -171,7 +181,7 @@ init =
   let
     tracks = trackCount
     |> List.map (\track_id ->
-        Track.init track_id (List.map (\beat_id -> Cell.init beat_id track_id) beatCount)
+        Track.init track_id (List.map (\cell_id -> Cell.init cell_id track_id) beatCount)
        )
     model  = initModel tracks
   in

@@ -8346,8 +8346,6 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
-var _user$project$Cell$initCells = _elm_lang$core$Native_List.fromArray(
-	[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
 var _user$project$Cell$init = F2(
 	function (id, track_id) {
 		return {id: id, track_id: track_id, is_active: false};
@@ -8358,12 +8356,12 @@ var _user$project$Cell$Cell = F3(
 	});
 
 var _user$project$Track$init = F2(
-	function (id, beats) {
-		return {id: id, beats: beats};
+	function (id, cells) {
+		return {id: id, cells: cells};
 	});
 var _user$project$Track$Track = F2(
 	function (a, b) {
-		return {id: a, beats: b};
+		return {id: a, cells: b};
 	});
 
 var _user$project$Main$interval = function (model) {
@@ -8400,7 +8398,7 @@ var _user$project$Main$stepEditorTableHeader = function (model) {
 							_elm_lang$core$Basics$toString(beat_id))
 						]));
 			},
-			model.total_beats));
+			_elm_lang$core$Native_List.range(1, model.total_beats)));
 };
 var _user$project$Main$stepEditorHeader = A2(
 	_elm_lang$html$Html$h3,
@@ -8422,19 +8420,27 @@ var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p1 = msg;
 		switch (_p1.ctor) {
+			case 'UpdateTotalBeats':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{total_beats: _p1._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'ToggleCell':
 				var tracks = A2(
 					_elm_lang$core$List$map,
 					function (t) {
-						var new_beats = A2(
+						var new_cells = A2(
 							_elm_lang$core$List$map,
 							function (b) {
 								return A3(_user$project$Main$activateCell, t, b, _p1._1);
 							},
-							t.beats);
+							t.cells);
 						return _elm_lang$core$Native_Utils.update(
 							t,
-							{beats: new_beats});
+							{cells: new_cells});
 					},
 					model.tracks);
 				return {
@@ -8458,9 +8464,7 @@ var _user$project$Main$update = F2(
 					} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				} else {
 					var _p3 = _p2._0;
-					return _elm_lang$core$Native_Utils.eq(
-						_p3,
-						_elm_lang$core$List$length(model.total_beats)) ? {
+					return _elm_lang$core$Native_Utils.eq(_p3, model.total_beats) ? {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
@@ -8513,7 +8517,13 @@ var _user$project$Main$update = F2(
 var _user$project$Main$trackCount = _elm_lang$core$Native_List.range(1, 4);
 var _user$project$Main$beatCount = _elm_lang$core$Native_List.range(1, 16);
 var _user$project$Main$initModel = function (tracks) {
-	return {tracks: tracks, total_beats: _user$project$Main$beatCount, bpm: 250, is_playing: false, current_beat: _elm_lang$core$Maybe$Nothing};
+	return {
+		tracks: tracks,
+		total_beats: _elm_lang$core$List$length(_user$project$Main$beatCount),
+		bpm: 250,
+		is_playing: false,
+		current_beat: _elm_lang$core$Maybe$Nothing
+	};
 };
 var _user$project$Main$init = function () {
 	var tracks = A2(
@@ -8524,8 +8534,8 @@ var _user$project$Main$init = function () {
 				track_id,
 				A2(
 					_elm_lang$core$List$map,
-					function (beat_id) {
-						return A2(_user$project$Cell$init, beat_id, track_id);
+					function (cell_id) {
+						return A2(_user$project$Cell$init, cell_id, track_id);
 					},
 					_user$project$Main$beatCount));
 		},
@@ -8539,49 +8549,6 @@ var _user$project$Main$Model = F5(
 	});
 var _user$project$Main$Stop = {ctor: 'Stop'};
 var _user$project$Main$Play = {ctor: 'Play'};
-var _user$project$Main$buttons = A2(
-	_elm_lang$html$Html$div,
-	_elm_lang$core$Native_List.fromArray(
-		[]),
-	_elm_lang$core$Native_List.fromArray(
-		[
-			A2(
-			_elm_lang$html$Html$button,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$class('btn btn-success'),
-					_elm_lang$html$Html_Events$onClick(_user$project$Main$Play)
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$span,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$class('glyphicon glyphicon-play')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[]))
-				])),
-			A2(
-			_elm_lang$html$Html$button,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Attributes$class('btn btn-danger'),
-					_elm_lang$html$Html_Events$onClick(_user$project$Main$Stop)
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_elm_lang$html$Html$span,
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html_Attributes$class('glyphicon glyphicon-stop')
-						]),
-					_elm_lang$core$Native_List.fromArray(
-						[]))
-				]))
-		]));
 var _user$project$Main$ToggleCell = F2(
 	function (a, b) {
 		return {ctor: 'ToggleCell', _0: a, _1: b};
@@ -8628,7 +8595,7 @@ var _user$project$Main$stepEditorTrack = F2(
 				function (beat) {
 					return A3(_user$project$Main$stepEditorCell, model, track, beat);
 				},
-				track.beats));
+				track.cells));
 	});
 var _user$project$Main$stepEditorTracks = function (model) {
 	return A2(
@@ -8668,6 +8635,78 @@ var _user$project$Main$stepEditorSection = function (model) {
 				_user$project$Main$stepEditor(model)
 			]));
 };
+var _user$project$Main$UpdateTotalBeats = function (a) {
+	return {ctor: 'UpdateTotalBeats', _0: a};
+};
+var _user$project$Main$buttons = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('btn btn-success'),
+						_elm_lang$html$Html_Events$onClick(_user$project$Main$Play)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$span,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('glyphicon glyphicon-play')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[]))
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('btn btn-danger'),
+						_elm_lang$html$Html_Events$onClick(_user$project$Main$Stop)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$span,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('glyphicon glyphicon-stop')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[]))
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('btn btn-default'),
+						_elm_lang$html$Html_Events$onClick(
+						_user$project$Main$UpdateTotalBeats(16))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('16 beats')
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('btn btn-default'),
+						_elm_lang$html$Html_Events$onClick(
+						_user$project$Main$UpdateTotalBeats(32))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('32 beats')
+					]))
+			]));
+};
 var _user$project$Main$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -8678,7 +8717,7 @@ var _user$project$Main$view = function (model) {
 		_elm_lang$core$Native_List.fromArray(
 			[
 				_user$project$Main$stepEditorSection(model),
-				_user$project$Main$buttons
+				_user$project$Main$buttons(model)
 			]));
 };
 var _user$project$Main$SetCurrentBeat = function (a) {

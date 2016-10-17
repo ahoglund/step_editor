@@ -1,4 +1,4 @@
-module Cell exposing (Cell, init, initCells)
+module Cell exposing (Cell, init)
 
 type alias Cell =
   { is_active : Bool
@@ -11,6 +11,3 @@ init id track_id =
   , track_id = track_id
   , is_active = False }
 
-initCells : List Int
-initCells =
-  [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
