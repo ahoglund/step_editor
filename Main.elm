@@ -10,16 +10,16 @@ import Track exposing (Track)
 import Beat exposing (Beat)
 
 type alias Model =
-  { beats : List Beat
-  , tracks : List Track
+  { tracks : List Track
+  , total_beats : List Int
   , current_beat : Int
   , is_playing : Bool
   , bpm : Int }
 
-initModel : Model
-initModel =
-  { beats  = (List.map Beat.init beatCount)
-  , tracks = (List.map Track.init trackCount)
+initModel : List Track -> Model
+initModel tracks =
+  { tracks = tracks
+  , total_beats = beatCount
   , bpm = 120
   , is_playing = False
   , current_beat = 1 }
@@ -30,35 +30,31 @@ beatCount =
 
 trackCount : List Int
 trackCount =
-  [1,2,3,4]
+  [1,2,3,4,5,6,7,8]
 
-type Msg = SetCurrentBeat Time | ActivateCell Int Int | Play | Stop
+type Msg = SetCurrentBeat Time | ActivateCell Track Beat | Play | Stop
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    ActivateCell track_number cell_number ->
-      let
-        beats = model.beats
-        |> List.map (\beat -> activateBeat track_number cell_number beat)
-      in
-        ({ model | beats = beats }, Cmd.none)
+    ActivateCell track beat ->
+      (model, Cmd.none)
     SetCurrentBeat time ->
-      if model.current_beat == List.length model.beats then
-        ( { model | current_beat = 1 }, Cmd.none )
+      if model.current_beat == List.length model.total_beats then
+        ({ model | current_beat = 1 }, Cmd.none )
       else
-        ( { model | current_beat = model.current_beat + 1 }, Cmd.none )
+        ({ model | current_beat = model.current_beat + 1 }, Cmd.none )
     Play ->
-      ( { model | is_playing = True  }, Cmd.none )
+      ({ model | is_playing = True  }, Cmd.none )
     Stop ->
-      ( { model | is_playing = False }, Cmd.none )
+      ({ model | is_playing = False }, Cmd.none )
 
-activateBeat : Int -> Int -> Beat -> Beat
-activateBeat track_number cell_number beat =
-  if beat.id == cell_number then
-    { beat | is_active = True }
+activateBeat : Track -> Beat -> Track
+activateBeat track beat =
+  if beat.track_id == track.id then
+    track
   else
-    beat
+    track
 
 stepEditorSection : Model -> Html Msg
 stepEditorSection model =
@@ -78,8 +74,8 @@ stepEditor model =
 
 stepEditorTableHeader : Model -> Html Msg
 stepEditorTableHeader model =
-  model.beats
-  |> List.map (\track -> th [] [ text (toString track.id) ])
+  model.total_beats
+  |> List.map (\beat_id -> th [] [ text (toString beat_id) ])
   |> tr []
 
 stepEditorTracks : Model -> Html Msg
@@ -90,22 +86,22 @@ stepEditorTracks model =
 
 stepEditorTrack : Model -> Track -> Html Msg
 stepEditorTrack model track =
-  model.beats
+  track.beats
   |> List.map (\beat -> stepEditorCell model track beat)
   |> tr []
 
 stepEditorCell : Model -> Track -> Beat -> Html Msg
 stepEditorCell model track beat =
   td [ id ("track-" ++ (toString track.id) ++ "-cell-" ++ (toString beat.id))
-     , class ((setActiveClass beat.id model.current_beat) ++ " " ++ setActiveCell beat)
-     , onClick (ActivateCell track.id beat.id)] [ ]
+     , class ((setActiveClass beat.id model.current_beat) ++ " " ++ (setActiveCell track beat))
+     , onClick (ActivateCell track beat)] [ ]
 
-setActiveCell : Beat -> String
-setActiveCell beat =
-  if beat.is_active == True then
+setActiveCell : Track -> Beat -> String
+setActiveCell track beat =
+  if beat.is_active == True && beat.track_id == track.id then
     "success"
   else
-    "off"
+    ""
 
 setActiveClass : Int -> Int -> String
 setActiveClass beat_id current_beat =
@@ -142,7 +138,15 @@ interval model =
 
 init =
   let
-    model = initModel
+    tracks = trackCount
+    |> List.map (\track_id ->
+        Track.init track_id (
+          List.map (\beat_id ->
+            Beat.init beat_id track_id
+          ) beatCount
+        )
+       )
+    model  = initModel tracks
   in
     (model, Cmd.none)
 

@@ -1,8 +1,12 @@
 module Track exposing (Track, init)
 
-type alias Track =
-  { id : Int }
+import Beat exposing (Beat)
 
-init : Int -> Track
-init id =
-  { id = id }
+type alias Track =
+  { id : Int
+  , beats : List Beat }
+
+init : Int -> List Beat -> Track
+init id beats =
+  { id = id
+  , beats = beats }

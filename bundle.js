@@ -8346,20 +8346,23 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
-var _user$project$Beat$init = function (id) {
-	return {id: id, is_active: false};
-};
-var _user$project$Beat$Beat = F2(
-	function (a, b) {
-		return {is_active: a, id: b};
+var _user$project$Beat$init = F2(
+	function (id, track_id) {
+		return {id: id, track_id: track_id, is_active: false};
+	});
+var _user$project$Beat$Beat = F3(
+	function (a, b, c) {
+		return {is_active: a, track_id: b, id: c};
 	});
 
-var _user$project$Track$init = function (id) {
-	return {id: id};
-};
-var _user$project$Track$Track = function (a) {
-	return {id: a};
-};
+var _user$project$Track$init = F2(
+	function (id, beats) {
+		return {id: id, beats: beats};
+	});
+var _user$project$Track$Track = F2(
+	function (a, b) {
+		return {id: a, beats: b};
+	});
 
 var _user$project$Main$interval = function (model) {
 	return 1 / _elm_lang$core$Basics$toFloat(model.bpm);
@@ -8368,9 +8371,10 @@ var _user$project$Main$setActiveClass = F2(
 	function (beat_id, current_beat) {
 		return _elm_lang$core$Native_Utils.eq(beat_id, current_beat) ? 'active' : 'inactive';
 	});
-var _user$project$Main$setActiveCell = function (beat) {
-	return _elm_lang$core$Native_Utils.eq(beat.is_active, true) ? 'success' : 'off';
-};
+var _user$project$Main$setActiveCell = F2(
+	function (track, beat) {
+		return (_elm_lang$core$Native_Utils.eq(beat.is_active, true) && _elm_lang$core$Native_Utils.eq(beat.track_id, track.id)) ? 'success' : '';
+	});
 var _user$project$Main$stepEditorTableHeader = function (model) {
 	return A2(
 		_elm_lang$html$Html$tr,
@@ -8378,7 +8382,7 @@ var _user$project$Main$stepEditorTableHeader = function (model) {
 			[]),
 		A2(
 			_elm_lang$core$List$map,
-			function (track) {
+			function (beat_id) {
 				return A2(
 					_elm_lang$html$Html$th,
 					_elm_lang$core$Native_List.fromArray(
@@ -8386,10 +8390,10 @@ var _user$project$Main$stepEditorTableHeader = function (model) {
 					_elm_lang$core$Native_List.fromArray(
 						[
 							_elm_lang$html$Html$text(
-							_elm_lang$core$Basics$toString(track.id))
+							_elm_lang$core$Basics$toString(beat_id))
 						]));
 			},
-			model.beats));
+			model.total_beats));
 };
 var _user$project$Main$stepEditorHeader = A2(
 	_elm_lang$html$Html$h3,
@@ -8399,34 +8403,20 @@ var _user$project$Main$stepEditorHeader = A2(
 		[
 			_elm_lang$html$Html$text('Drum Sequence Editor')
 		]));
-var _user$project$Main$activateBeat = F3(
-	function (track_number, cell_number, beat) {
-		return _elm_lang$core$Native_Utils.eq(beat.id, cell_number) ? _elm_lang$core$Native_Utils.update(
-			beat,
-			{is_active: true}) : beat;
+var _user$project$Main$activateBeat = F2(
+	function (track, beat) {
+		return _elm_lang$core$Native_Utils.eq(beat.track_id, track.id) ? track : track;
 	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
 		switch (_p0.ctor) {
 			case 'ActivateCell':
-				var beats = A2(
-					_elm_lang$core$List$map,
-					function (beat) {
-						return A3(_user$project$Main$activateBeat, _p0._0, _p0._1, beat);
-					},
-					model.beats);
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{beats: beats}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'SetCurrentBeat':
 				return _elm_lang$core$Native_Utils.eq(
 					model.current_beat,
-					_elm_lang$core$List$length(model.beats)) ? {
+					_elm_lang$core$List$length(model.total_beats)) ? {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
@@ -8458,23 +8448,33 @@ var _user$project$Main$update = F2(
 		}
 	});
 var _user$project$Main$trackCount = _elm_lang$core$Native_List.fromArray(
-	[1, 2, 3, 4]);
+	[1, 2, 3, 4, 5, 6, 7, 8]);
 var _user$project$Main$beatCount = _elm_lang$core$Native_List.fromArray(
 	[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
-var _user$project$Main$initModel = {
-	beats: A2(_elm_lang$core$List$map, _user$project$Beat$init, _user$project$Main$beatCount),
-	tracks: A2(_elm_lang$core$List$map, _user$project$Track$init, _user$project$Main$trackCount),
-	bpm: 120,
-	is_playing: false,
-	current_beat: 1
+var _user$project$Main$initModel = function (tracks) {
+	return {tracks: tracks, total_beats: _user$project$Main$beatCount, bpm: 120, is_playing: false, current_beat: 1};
 };
 var _user$project$Main$init = function () {
-	var model = _user$project$Main$initModel;
+	var tracks = A2(
+		_elm_lang$core$List$map,
+		function (track_id) {
+			return A2(
+				_user$project$Track$init,
+				track_id,
+				A2(
+					_elm_lang$core$List$map,
+					function (beat_id) {
+						return A2(_user$project$Beat$init, beat_id, track_id);
+					},
+					_user$project$Main$beatCount));
+		},
+		_user$project$Main$trackCount);
+	var model = _user$project$Main$initModel(tracks);
 	return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 }();
 var _user$project$Main$Model = F5(
 	function (a, b, c, d, e) {
-		return {beats: a, tracks: b, current_beat: c, is_playing: d, bpm: e};
+		return {tracks: a, total_beats: b, current_beat: c, is_playing: d, bpm: e};
 	});
 var _user$project$Main$Stop = {ctor: 'Stop'};
 var _user$project$Main$Play = {ctor: 'Play'};
@@ -8535,9 +8535,9 @@ var _user$project$Main$stepEditorCell = F3(
 						A2(
 							_elm_lang$core$Basics_ops['++'],
 							' ',
-							_user$project$Main$setActiveCell(beat)))),
+							A2(_user$project$Main$setActiveCell, track, beat)))),
 					_elm_lang$html$Html_Events$onClick(
-					A2(_user$project$Main$ActivateCell, track.id, beat.id))
+					A2(_user$project$Main$ActivateCell, track, beat))
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[]));
@@ -8553,7 +8553,7 @@ var _user$project$Main$stepEditorTrack = F2(
 				function (beat) {
 					return A3(_user$project$Main$stepEditorCell, model, track, beat);
 				},
-				model.beats));
+				track.beats));
 	});
 var _user$project$Main$stepEditorTracks = function (model) {
 	return A2(
