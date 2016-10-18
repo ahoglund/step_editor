@@ -13,8 +13,38 @@
 <body>
   <div id="app"></div>
   <script type="text/javascript" src="bundle.js"></script>
-  <script>var app = Elm.Main.embed(document.getElementById("app")); </script>
   <script type="text/javascript" src="jquery-3.1.1.min.js"></script>
   <script type="text/javascript" src="bootstrap.min.js"></script>
+  <script>
+    var app          = Elm.Main.embed(document.getElementById("app"));
+    var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    var source;
+
+    function getSample(sample_file) {
+      source  = audioContext.createBufferSource();
+      request = new XMLHttpRequest();
+      request.open('GET', sample_file, true);
+      request.responseType = 'arraybuffer';
+
+      request.onload = function() {
+        var audioData = request.response;
+        audioContext.decodeAudioData(audioData, function(buffer) {
+            source.buffer = buffer;
+            source.connect(audioContext.destination);
+          },
+          function(e){"Error decoding sample data" + e.err});
+      }
+      request.send();
+    }
+
+    function playSound(file) {
+      getSample(file);
+      source.start(0);
+    }
+
+    app.ports.playRawSound.subscribe(function (file) {
+      playSound(file);
+    });
+  </script>
 </body>
 </html>

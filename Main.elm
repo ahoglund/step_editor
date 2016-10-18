@@ -8,6 +8,7 @@ import Time exposing (Time, second)
 import String
 import Track exposing (Track)
 import Cell exposing (Cell)
+import Cmds exposing (..)
 
 type alias Model =
   { tracks : List Track
@@ -20,7 +21,7 @@ initModel : List Track -> Model
 initModel tracks =
   { tracks = tracks
   , total_beats = List.length beatCount
-  , bpm = 250
+  , bpm = 180
   , is_playing = False
   , current_beat = Nothing }
 
@@ -28,12 +29,17 @@ beatCount : List Int
 beatCount =
   [1..16]
 
-trackCount : List Int
+trackCount : List { id : number, name : String, sample_file : String }
 trackCount =
-  [1..4]
+  [
+    { id = 1, name = "Kick", sample_file = "samples/kick.wav" },
+    { id = 2, name = "Snare", sample_file = "samples/snare.wav" },
+    { id = 3, name = "HH Closed", sample_file = "samples/hh-closed.wav" },
+    { id = 4, name = "HH Open", sample_file = "samples/hh-open.wav" }
+  ]
 
 type Msg = SetCurrentBeat Time
-  | UpdateTotalBeats Int
+  | PlaySound String
   | ToggleCell Track Cell
   | Play
   | Stop
@@ -41,14 +47,14 @@ type Msg = SetCurrentBeat Time
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    UpdateTotalBeats new_total ->
-      ({ model | total_beats = new_total }, Cmd.none)
+    PlaySound file ->
+      (model, Cmds.playSound(file))
     ToggleCell track beat ->
       let
         tracks = model.tracks
         |> List.map (\t ->
           let
-            new_cells = List.map (\b -> activateCell t b beat) t.cells
+            new_cells = List.map (\b -> toggleCell t b beat) t.cells
           in
           ({ t | cells = new_cells })
         )
@@ -77,15 +83,15 @@ update msg model =
       else
         ({ model | is_playing = False }, Cmd.none )
 
-activateCell : Track -> Cell -> Cell -> Cell
-activateCell track beat1 beat2 =
-  if track.id == beat2.track_id && beat1.id == beat2.id  then
-    if beat1.is_active == True then
-      ({ beat1 | is_active = False })
+toggleCell : Track -> Cell -> Cell -> Cell
+toggleCell track cell1 cell2 =
+  if track.id == cell2.track_id && cell1.id == cell2.id  then
+    if cell1.is_active == True then
+      ({ cell1 | is_active = False })
     else
-      ({ beat1 | is_active = True })
+      ({ cell1 | is_active = True })
   else
-    (beat1)
+    (cell1)
 
 stepEditorSection : Model -> Html Msg
 stepEditorSection model =
@@ -107,6 +113,7 @@ stepEditorTableHeader : Model -> Html Msg
 stepEditorTableHeader model =
   [1..model.total_beats]
   |> List.map (\beat_id -> th [] [ text (toString beat_id) ])
+  |> List.append [th [] [ text "Sample" ]]
   |> tr []
 
 stepEditorTracks : Model -> Html Msg
@@ -117,15 +124,23 @@ stepEditorTracks model =
 
 stepEditorTrack : Model -> Track -> Html Msg
 stepEditorTrack model track =
-  track.cells
-  |> List.map (\beat -> stepEditorCell model track beat)
-  |> tr []
+  let
+  preview_cell =
+    td []
+      [ button [ class "btn btn-default" , onClick (PlaySound track.sample_file)]
+        [ text track.name ]
+      ]
+  in
+    track.cells
+    |> List.map (\beat -> stepEditorCell model track beat)
+    |> List.append [preview_cell]
+    |> tr []
 
 stepEditorCell : Model -> Track -> Cell -> Html Msg
 stepEditorCell model track beat =
   td [ id ("track-" ++ (toString track.id) ++ "-cell-" ++ (toString beat.id))
      , class ((setActiveClass beat.id model.current_beat) ++ " " ++ (setActiveCell track beat))
-     , onClick (ToggleCell track beat)] [ ]
+     , onClick (ToggleCell track beat)] []
 
 setActiveCell : Track -> Cell -> String
 setActiveCell track beat =
@@ -152,11 +167,7 @@ buttons model =
     button [ class "btn btn-success" , onClick Play ]
       [ span [ class "glyphicon glyphicon-play" ] [] ],
     button [ class "btn btn-danger" , onClick Stop ]
-      [ span [ class "glyphicon glyphicon-stop" ] [] ],
-    button [ class "btn btn-default" , onClick (UpdateTotalBeats 16)]
-      [ text "16 beats" ],
-    button [ class "btn btn-default" , onClick (UpdateTotalBeats 32)]
-      [  text "32 beats" ]
+      [ span [ class "glyphicon glyphicon-stop" ] [] ]
   ]
 
 view : Model -> Html Msg
@@ -180,10 +191,14 @@ interval model =
 init =
   let
     tracks = trackCount
-    |> List.map (\track_id ->
-        Track.init track_id (List.map (\cell_id -> Cell.init cell_id track_id) beatCount)
+    |> List.map (\track_details ->
+        Track.init
+          track_details.id
+          (List.map (\cell_id -> Cell.init cell_id track_details.id) beatCount)
+          track_details.name
+          track_details.sample_file
        )
-    model  = initModel tracks
+    model = initModel tracks
   in
     (model, Cmd.none)
 
