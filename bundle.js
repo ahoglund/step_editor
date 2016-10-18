@@ -8403,9 +8403,7 @@ var _ahoglund$step_editor$Main$stepEditorTableHeader = function (model) {
 					_elm_lang$core$Native_List.fromArray(
 						[]),
 					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text('Sample')
-						]))
+						[]))
 				]),
 			A2(
 				_elm_lang$core$List$map,
@@ -8665,21 +8663,31 @@ var _ahoglund$step_editor$Main$stepEditorTrack = F2(
 		var preview_cell = A2(
 			_elm_lang$html$Html$td,
 			_elm_lang$core$Native_List.fromArray(
-				[]),
+				[
+					_elm_lang$html$Html_Attributes$class('sample')
+				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
 					A2(
 					_elm_lang$html$Html$button,
 					_elm_lang$core$Native_List.fromArray(
 						[
-							_elm_lang$html$Html_Attributes$class('btn btn-default'),
+							_elm_lang$html$Html_Attributes$class('btn'),
 							_elm_lang$html$Html_Events$onClick(
 							_ahoglund$step_editor$Main$PlaySound(track.sample_file))
 						]),
 					_elm_lang$core$Native_List.fromArray(
 						[
-							_elm_lang$html$Html$text(track.name)
-						]))
+							A2(
+							_elm_lang$html$Html$span,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html_Attributes$class('glyphicon glyphicon-play')
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[]))
+						])),
+					_elm_lang$html$Html$text(track.name)
 				]));
 		return A2(
 			_elm_lang$html$Html$tr,

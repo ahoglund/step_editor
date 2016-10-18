@@ -1,6 +1,6 @@
 .container {
   width: auto;
-  max-width: 680px;
+  max-width: 970px;
   padding: 0 15px;
 }
 
@@ -16,6 +16,10 @@ th {
 td {
   width: 40.5px;
   height: 20.5px;
+}
+
+td.sample {
+  width: 200px;
 }
 
 button {

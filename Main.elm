@@ -113,7 +113,7 @@ stepEditorTableHeader : Model -> Html Msg
 stepEditorTableHeader model =
   [1..model.total_beats]
   |> List.map (\beat_id -> th [] [ text (toString beat_id) ])
-  |> List.append [th [] [ text "Sample" ]]
+  |> List.append [th [] []]
   |> tr []
 
 stepEditorTracks : Model -> Html Msg
@@ -126,9 +126,13 @@ stepEditorTrack : Model -> Track -> Html Msg
 stepEditorTrack model track =
   let
   preview_cell =
-    td []
-      [ button [ class "btn btn-default" , onClick (PlaySound track.sample_file)]
-        [ text track.name ]
+    td [ class "sample"]
+      [
+       button [ class "btn", onClick (PlaySound track.sample_file)]
+         [
+           span [ class "glyphicon glyphicon-play" ] []
+         ],
+       text track.name
       ]
   in
     track.cells
