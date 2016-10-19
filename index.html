@@ -18,19 +18,20 @@
   <script>
     var app          = Elm.Main.embed(document.getElementById("app"));
     var audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    var source;
 
     function getSample(sample_file) {
       source  = audioContext.createBufferSource();
       request = new XMLHttpRequest();
       request.open('GET', sample_file, true);
       request.responseType = 'arraybuffer';
+      console.log(sample_file);
+      source.connect(audioContext.destination);
 
       request.onload = function() {
-        var audioData = request.response;
-        audioContext.decodeAudioData(audioData, function(buffer) {
-            source.buffer = buffer;
-            source.connect(audioContext.destination);
+        audioContext.decodeAudioData(request.response, function(buffer) {
+            playBuffer = buffer;
+            source.buffer = playBuffer;
+            source.start(0);
           },
           function(e){"Error decoding sample data" + e.err});
       }
@@ -39,7 +40,6 @@
 
     function playSound(file) {
       getSample(file);
-      source.start(0);
     }
 
     app.ports.playRawSound.subscribe(function (file) {

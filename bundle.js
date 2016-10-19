@@ -8368,6 +8368,55 @@ var _ahoglund$step_editor$Track$init = F4(
 	function (id, cells, name, sample_file) {
 		return {id: id, name: name, sample_file: sample_file, cells: cells};
 	});
+var _ahoglund$step_editor$Track$defaultTracks = function (total_cells) {
+	return _elm_lang$core$Native_List.fromArray(
+		[
+			A4(
+			_ahoglund$step_editor$Track$init,
+			1,
+			A2(
+				_elm_lang$core$List$map,
+				function (cell_id) {
+					return A2(_ahoglund$step_editor$Cell$init, cell_id, 1);
+				},
+				total_cells),
+			'Kick',
+			'samples/kick.wav'),
+			A4(
+			_ahoglund$step_editor$Track$init,
+			2,
+			A2(
+				_elm_lang$core$List$map,
+				function (cell_id) {
+					return A2(_ahoglund$step_editor$Cell$init, cell_id, 2);
+				},
+				total_cells),
+			'Snare',
+			'samples/snare.wav'),
+			A4(
+			_ahoglund$step_editor$Track$init,
+			3,
+			A2(
+				_elm_lang$core$List$map,
+				function (cell_id) {
+					return A2(_ahoglund$step_editor$Cell$init, cell_id, 3);
+				},
+				total_cells),
+			'HH Closed',
+			'samples/hh-closed.wav'),
+			A4(
+			_ahoglund$step_editor$Track$init,
+			4,
+			A2(
+				_elm_lang$core$List$map,
+				function (cell_id) {
+					return A2(_ahoglund$step_editor$Cell$init, cell_id, 4);
+				},
+				total_cells),
+			'HH Open',
+			'samples/hh-open.wav')
+		]);
+};
 var _ahoglund$step_editor$Track$Track = F4(
 	function (a, b, c, d) {
 		return {id: a, name: b, sample_file: c, cells: d};
@@ -8436,6 +8485,21 @@ var _ahoglund$step_editor$Main$toggleCell = F3(
 			cell1,
 			{is_active: true})) : cell1;
 	});
+var _ahoglund$step_editor$Main$playSounds = F2(
+	function (model, current_beat) {
+		return _elm_lang$core$List$concat(
+			A2(
+				_elm_lang$core$List$map,
+				function (track) {
+					return A2(
+						_elm_lang$core$List$map,
+						function (cell) {
+							return (cell.is_active && _elm_lang$core$Native_Utils.eq(current_beat, cell.id)) ? _ahoglund$step_editor$Cmds$playSound(track.sample_file) : _elm_lang$core$Platform_Cmd$none;
+						},
+						track.cells);
+				},
+				model.tracks));
+	});
 var _ahoglund$step_editor$Main$update = F2(
 	function (msg, model) {
 		var _p1 = msg;
@@ -8489,7 +8553,8 @@ var _ahoglund$step_editor$Main$update = F2(
 							{
 								current_beat: _elm_lang$core$Maybe$Just(1)
 							}),
-						_1: _elm_lang$core$Platform_Cmd$none
+						_1: _elm_lang$core$Platform_Cmd$batch(
+							A2(_ahoglund$step_editor$Main$playSounds, model, 1))
 					} : {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
@@ -8497,7 +8562,8 @@ var _ahoglund$step_editor$Main$update = F2(
 							{
 								current_beat: _elm_lang$core$Maybe$Just(_p3 + 1)
 							}),
-						_1: _elm_lang$core$Platform_Cmd$none
+						_1: _elm_lang$core$Platform_Cmd$batch(
+							A2(_ahoglund$step_editor$Main$playSounds, model, _p3 + 1))
 					};
 				}
 			case 'Play':
@@ -8532,41 +8598,19 @@ var _ahoglund$step_editor$Main$update = F2(
 				};
 		}
 	});
-var _ahoglund$step_editor$Main$trackCount = _elm_lang$core$Native_List.fromArray(
-	[
-		{id: 1, name: 'Kick', sample_file: 'samples/kick.wav'},
-		{id: 2, name: 'Snare', sample_file: 'samples/snare.wav'},
-		{id: 3, name: 'HH Closed', sample_file: 'samples/hh-closed.wav'},
-		{id: 4, name: 'HH Open', sample_file: 'samples/hh-open.wav'}
-	]);
 var _ahoglund$step_editor$Main$beatCount = _elm_lang$core$Native_List.range(1, 16);
 var _ahoglund$step_editor$Main$initModel = function (tracks) {
 	return {
 		tracks: tracks,
 		total_beats: _elm_lang$core$List$length(_ahoglund$step_editor$Main$beatCount),
-		bpm: 180,
+		bpm: 234,
 		is_playing: false,
 		current_beat: _elm_lang$core$Maybe$Nothing
 	};
 };
 var _ahoglund$step_editor$Main$init = function () {
-	var tracks = A2(
-		_elm_lang$core$List$map,
-		function (track_details) {
-			return A4(
-				_ahoglund$step_editor$Track$init,
-				track_details.id,
-				A2(
-					_elm_lang$core$List$map,
-					function (cell_id) {
-						return A2(_ahoglund$step_editor$Cell$init, cell_id, track_details.id);
-					},
-					_ahoglund$step_editor$Main$beatCount),
-				track_details.name,
-				track_details.sample_file);
-		},
-		_ahoglund$step_editor$Main$trackCount);
-	var model = _ahoglund$step_editor$Main$initModel(tracks);
+	var model = _ahoglund$step_editor$Main$initModel(
+		_ahoglund$step_editor$Track$defaultTracks(_ahoglund$step_editor$Main$beatCount));
 	return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 }();
 var _ahoglund$step_editor$Main$Model = F5(
