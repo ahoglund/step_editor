@@ -21,7 +21,7 @@ initModel : List Track -> Model
 initModel tracks =
   { tracks = tracks
   , total_beats = List.length beatCount
-  , bpm = 234
+  , bpm = 120
   , is_playing = False
   , current_beat = Nothing }
 
@@ -30,6 +30,7 @@ beatCount =
   [1..16]
 
 type Msg = SetCurrentBeat Time
+  | UpdateBpm Int
   | PlaySound String
   | ToggleCell Track Cell
   | Play
@@ -38,6 +39,8 @@ type Msg = SetCurrentBeat Time
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
+    UpdateBpm bpm ->
+      ({ model | bpm = bpm }, Cmd.none)
     PlaySound file ->
       (model, Cmds.playSound(file))
     ToggleCell track beat ->
@@ -54,39 +57,40 @@ update msg model =
     SetCurrentBeat time ->
       case model.current_beat of
         Nothing ->
-          if model.is_playing == True then
-            ({ model | current_beat = Just 1 }, Cmd.none )
-          else
-            (model, Cmd.none)
+          ({ model | current_beat = (Just 1) }, Cmd.batch (playSounds model ((Just 1))))
         Just beat ->
           if beat == model.total_beats then
-            ({ model | current_beat = Just 1 }, Cmd.batch (playSounds model 1) )
+            ({ model | current_beat = (Just 1) }, Cmd.batch (playSounds model ((Just 1))))
           else
-            ({ model | current_beat = Just (beat + 1)}, Cmd.batch (playSounds model (beat + 1)))
+            ({ model | current_beat = Just (beat + 1) }, Cmd.batch (playSounds model (Just (beat + 1))))
     Play ->
       if model.is_playing == True then
-        ({ model | current_beat = Just 1 }, Cmd.none )
+        ({ model | current_beat = Just 1 }, Cmd.batch (playSounds model (Just 1)) )
       else
-        ({ model | is_playing = True }, Cmd.none )
+        ({ model | is_playing = True }, Cmd.batch (playSounds model (model.current_beat)) )
     Stop ->
       if model.is_playing == False then
         ({ model | current_beat = Nothing, is_playing = False }, Cmd.none )
       else
         ({ model | is_playing = False }, Cmd.none )
 
-playSounds : Model -> Int -> List (Cmd msg)
+playSounds : Model -> Maybe Int -> List (Cmd msg)
 playSounds model current_beat =
-  model.tracks
-  |> List.map (\track ->
-    track.cells
-    |> List.map (\cell ->
-      if cell.is_active && current_beat == cell.id then
-        (Cmds.playSound(track.sample_file))
-      else
-        (Cmd.none)
-    )
-  )
-  |> List.concat
+  case current_beat of
+    Nothing ->
+      [(Cmd.none)]
+    Just beat ->
+      model.tracks
+      |> List.map (\track ->
+        track.cells
+        |> List.map (\cell ->
+          if cell.is_active && beat == cell.id then
+            (Cmds.playSound(track.sample_file))
+          else
+            (Cmd.none)
+        )
+      )
+      |> List.concat
 
 toggleCell : Track -> Cell -> Cell -> Cell
 toggleCell track cell1 cell2 =
@@ -176,7 +180,12 @@ buttons model =
     button [ class "btn btn-success" , onClick Play ]
       [ span [ class "glyphicon glyphicon-play" ] [] ],
     button [ class "btn btn-danger" , onClick Stop ]
-      [ span [ class "glyphicon glyphicon-stop" ] [] ]
+      [ span [ class "glyphicon glyphicon-stop" ] [] ],
+    button [ class "btn btn-default"] [ text (toString model.bpm)],
+    button [ class "btn btn-default" , onClick (UpdateBpm (model.bpm + 1))]
+      [ span [ class "glyphicon glyphicon-arrow-up" ] [] ],
+    button [ class "btn btn-default" , onClick (UpdateBpm (model.bpm - 1))]
+      [ span [ class "glyphicon glyphicon-arrow-down" ] [] ]
   ]
 
 view : Model -> Html Msg
@@ -195,7 +204,7 @@ subscriptions model =
 
 interval : Model -> Float
 interval model =
-    1 / (toFloat model.bpm)
+    0.5 / (toFloat model.bpm)
 
 init =
   let

@@ -20,16 +20,16 @@
     var audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
     function getSample(sample_file) {
-      source  = audioContext.createBufferSource();
       request = new XMLHttpRequest();
       request.open('GET', sample_file, true);
       request.responseType = 'arraybuffer';
       console.log(sample_file);
-      source.connect(audioContext.destination);
 
       request.onload = function() {
         audioContext.decodeAudioData(request.response, function(buffer) {
             playBuffer = buffer;
+            source  = audioContext.createBufferSource();
+            source.connect(audioContext.destination);
             source.buffer = playBuffer;
             source.start(0);
           },

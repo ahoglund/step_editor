@@ -8423,7 +8423,7 @@ var _ahoglund$step_editor$Track$Track = F4(
 	});
 
 var _ahoglund$step_editor$Main$interval = function (model) {
-	return 1 / _elm_lang$core$Basics$toFloat(model.bpm);
+	return 0.5 / _elm_lang$core$Basics$toFloat(model.bpm);
 };
 var _ahoglund$step_editor$Main$setActiveClass = F2(
 	function (beat_id, current_beat) {
@@ -8487,28 +8487,42 @@ var _ahoglund$step_editor$Main$toggleCell = F3(
 	});
 var _ahoglund$step_editor$Main$playSounds = F2(
 	function (model, current_beat) {
-		return _elm_lang$core$List$concat(
-			A2(
-				_elm_lang$core$List$map,
-				function (track) {
-					return A2(
-						_elm_lang$core$List$map,
-						function (cell) {
-							return (cell.is_active && _elm_lang$core$Native_Utils.eq(current_beat, cell.id)) ? _ahoglund$step_editor$Cmds$playSound(track.sample_file) : _elm_lang$core$Platform_Cmd$none;
-						},
-						track.cells);
-				},
-				model.tracks));
+		var _p1 = current_beat;
+		if (_p1.ctor === 'Nothing') {
+			return _elm_lang$core$Native_List.fromArray(
+				[_elm_lang$core$Platform_Cmd$none]);
+		} else {
+			return _elm_lang$core$List$concat(
+				A2(
+					_elm_lang$core$List$map,
+					function (track) {
+						return A2(
+							_elm_lang$core$List$map,
+							function (cell) {
+								return (cell.is_active && _elm_lang$core$Native_Utils.eq(_p1._0, cell.id)) ? _ahoglund$step_editor$Cmds$playSound(track.sample_file) : _elm_lang$core$Platform_Cmd$none;
+							},
+							track.cells);
+					},
+					model.tracks));
+		}
 	});
 var _ahoglund$step_editor$Main$update = F2(
 	function (msg, model) {
-		var _p1 = msg;
-		switch (_p1.ctor) {
+		var _p2 = msg;
+		switch (_p2.ctor) {
+			case 'UpdateBpm':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{bpm: _p2._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'PlaySound':
 				return {
 					ctor: '_Tuple2',
 					_0: model,
-					_1: _ahoglund$step_editor$Cmds$playSound(_p1._0)
+					_1: _ahoglund$step_editor$Cmds$playSound(_p2._0)
 				};
 			case 'ToggleCell':
 				var tracks = A2(
@@ -8517,7 +8531,7 @@ var _ahoglund$step_editor$Main$update = F2(
 						var new_cells = A2(
 							_elm_lang$core$List$map,
 							function (b) {
-								return A3(_ahoglund$step_editor$Main$toggleCell, t, b, _p1._1);
+								return A3(_ahoglund$step_editor$Main$toggleCell, t, b, _p2._1);
 							},
 							t.cells);
 						return _elm_lang$core$Native_Utils.update(
@@ -8533,20 +8547,9 @@ var _ahoglund$step_editor$Main$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'SetCurrentBeat':
-				var _p2 = model.current_beat;
-				if (_p2.ctor === 'Nothing') {
-					return _elm_lang$core$Native_Utils.eq(model.is_playing, true) ? {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{
-								current_beat: _elm_lang$core$Maybe$Just(1)
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-				} else {
-					var _p3 = _p2._0;
-					return _elm_lang$core$Native_Utils.eq(_p3, model.total_beats) ? {
+				var _p3 = model.current_beat;
+				if (_p3.ctor === 'Nothing') {
+					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
@@ -8554,16 +8557,37 @@ var _ahoglund$step_editor$Main$update = F2(
 								current_beat: _elm_lang$core$Maybe$Just(1)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$batch(
-							A2(_ahoglund$step_editor$Main$playSounds, model, 1))
+							A2(
+								_ahoglund$step_editor$Main$playSounds,
+								model,
+								_elm_lang$core$Maybe$Just(1)))
+					};
+				} else {
+					var _p4 = _p3._0;
+					return _elm_lang$core$Native_Utils.eq(_p4, model.total_beats) ? {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								current_beat: _elm_lang$core$Maybe$Just(1)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$batch(
+							A2(
+								_ahoglund$step_editor$Main$playSounds,
+								model,
+								_elm_lang$core$Maybe$Just(1)))
 					} : {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								current_beat: _elm_lang$core$Maybe$Just(_p3 + 1)
+								current_beat: _elm_lang$core$Maybe$Just(_p4 + 1)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$batch(
-							A2(_ahoglund$step_editor$Main$playSounds, model, _p3 + 1))
+							A2(
+								_ahoglund$step_editor$Main$playSounds,
+								model,
+								_elm_lang$core$Maybe$Just(_p4 + 1)))
 					};
 				}
 			case 'Play':
@@ -8574,13 +8598,18 @@ var _ahoglund$step_editor$Main$update = F2(
 						{
 							current_beat: _elm_lang$core$Maybe$Just(1)
 						}),
-					_1: _elm_lang$core$Platform_Cmd$none
+					_1: _elm_lang$core$Platform_Cmd$batch(
+						A2(
+							_ahoglund$step_editor$Main$playSounds,
+							model,
+							_elm_lang$core$Maybe$Just(1)))
 				} : {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{is_playing: true}),
-					_1: _elm_lang$core$Platform_Cmd$none
+					_1: _elm_lang$core$Platform_Cmd$batch(
+						A2(_ahoglund$step_editor$Main$playSounds, model, model.current_beat))
 				};
 			default:
 				return _elm_lang$core$Native_Utils.eq(model.is_playing, false) ? {
@@ -8603,7 +8632,7 @@ var _ahoglund$step_editor$Main$initModel = function (tracks) {
 	return {
 		tracks: tracks,
 		total_beats: _elm_lang$core$List$length(_ahoglund$step_editor$Main$beatCount),
-		bpm: 234,
+		bpm: 120,
 		is_playing: false,
 		current_beat: _elm_lang$core$Maybe$Nothing
 	};
@@ -8619,51 +8648,6 @@ var _ahoglund$step_editor$Main$Model = F5(
 	});
 var _ahoglund$step_editor$Main$Stop = {ctor: 'Stop'};
 var _ahoglund$step_editor$Main$Play = {ctor: 'Play'};
-var _ahoglund$step_editor$Main$buttons = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('btn btn-success'),
-						_elm_lang$html$Html_Events$onClick(_ahoglund$step_editor$Main$Play)
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
-						_elm_lang$html$Html$span,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$class('glyphicon glyphicon-play')
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[]))
-					])),
-				A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('btn btn-danger'),
-						_elm_lang$html$Html_Events$onClick(_ahoglund$step_editor$Main$Stop)
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
-						_elm_lang$html$Html$span,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$class('glyphicon glyphicon-stop')
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[]))
-					]))
-			]));
-};
 var _ahoglund$step_editor$Main$ToggleCell = F2(
 	function (a, b) {
 		return {ctor: 'ToggleCell', _0: a, _1: b};
@@ -8786,6 +8770,103 @@ var _ahoglund$step_editor$Main$stepEditorSection = function (model) {
 				_ahoglund$step_editor$Main$stepEditor(model)
 			]));
 };
+var _ahoglund$step_editor$Main$UpdateBpm = function (a) {
+	return {ctor: 'UpdateBpm', _0: a};
+};
+var _ahoglund$step_editor$Main$buttons = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('btn btn-success'),
+						_elm_lang$html$Html_Events$onClick(_ahoglund$step_editor$Main$Play)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$span,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('glyphicon glyphicon-play')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[]))
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('btn btn-danger'),
+						_elm_lang$html$Html_Events$onClick(_ahoglund$step_editor$Main$Stop)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$span,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('glyphicon glyphicon-stop')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[]))
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('btn btn-default')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(model.bpm))
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('btn btn-default'),
+						_elm_lang$html$Html_Events$onClick(
+						_ahoglund$step_editor$Main$UpdateBpm(model.bpm + 1))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$span,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('glyphicon glyphicon-arrow-up')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[]))
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('btn btn-default'),
+						_elm_lang$html$Html_Events$onClick(
+						_ahoglund$step_editor$Main$UpdateBpm(model.bpm - 1))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$span,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('glyphicon glyphicon-arrow-down')
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[]))
+					]))
+			]));
+};
 var _ahoglund$step_editor$Main$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -8803,8 +8884,8 @@ var _ahoglund$step_editor$Main$SetCurrentBeat = function (a) {
 	return {ctor: 'SetCurrentBeat', _0: a};
 };
 var _ahoglund$step_editor$Main$subscriptions = function (model) {
-	var _p4 = model.is_playing;
-	if (_p4 === true) {
+	var _p5 = model.is_playing;
+	if (_p5 === true) {
 		return A2(
 			_elm_lang$core$Time$every,
 			_elm_lang$core$Time$minute * _ahoglund$step_editor$Main$interval(model),
